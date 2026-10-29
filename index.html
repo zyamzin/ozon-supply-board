@@ -178,6 +178,18 @@ tr.risk-mid td:first-child{box-shadow:inset 4px 0 0 #FF9F1C}
   .progress{padding:10px 14px}
 }
 @media (prefers-reduced-motion:reduce){.bar>i{transition:none}}
+/* плашка «Инструкция по использованию» рядом с бейджем автора (только этот инструмент) */
+.ab-root .ab-badges{position:fixed;right:14px;bottom:14px;z-index:30;display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;max-width:calc(100vw - 28px)}
+.ab-root .ab-badges .ab-badge{position:static}
+.ab-root .ab-badge-help i{width:34px;height:34px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:var(--ab-link);color:#fff}
+.ab-root .ab-badge-help svg{width:18px;height:18px;display:block}
+@media (max-width:640px){
+  .ab-root .ab-badges{right:10px;bottom:10px;max-width:calc(100vw - 20px)}
+  .ab-root .ab-badge-help{padding:3px 12px 3px 3px;gap:6px}
+  .ab-root .ab-badge-help i{width:36px;height:36px}
+  .ab-root .ab-badge-help span{position:static;width:auto;height:auto;overflow:visible;clip:auto;font-size:12px}
+}
+html.shot .ab-root .ab-badges,html.shot .ab-root .ab-badge{display:none!important}
 /* author-block.css — «блок автора»: бейдж, подвал, попап. Префикс .ab-, ничего не трогает на странице.
    Цвета меняются переменными --ab-* (JS ставит их из config.colors на .ab-root). Без hover-свечения. */
 .ab-root{
@@ -1697,7 +1709,7 @@ function zipStore(files) {
     const nm = enc.encode(f.name), data = f.data || enc.encode(f.text), crc = crc32(data), date = ((2026 - 1980) << 9) | (1 << 5) | 1;
     const common = [...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(date), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nm.length), ...u16(0)];
     parts.push(new Uint8Array([0x50, 0x4B, 3, 4, ...common]), nm, data);
-    central.push(new Uint8Array([0x50, 0x4B, 1, 2, ...u16(20), ...common, ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off)]), nm);
+    central.push(new Uint8Array([0x50, 0x4B, 1, 2, ...u16(0x0314), ...common, ...u16(0), ...u16(0), ...u16(0), ...u32(0x81A40000), ...u32(off)]), nm); // 0x0314: хост Unix + zip 2.0, чтобы распаковщики (macOS и др.) не трактовали имена как DOS/OEM-кодировку; 0x81A4 = файл 0644
     off += 30 + nm.length + data.length;
   });
   const csize = central.reduce((n, a) => n + a.length, 0);
@@ -1791,12 +1803,35 @@ $("btnPlanXlsx").addEventListener("click", downloadPlanXlsx);
 $("pOzon").addEventListener("change", () => { $("pOzonHint").hidden = !$("pOzon").checked; $("pOzonMsg").textContent = ""; });
 $("planTable").addEventListener("click", (e) => { const r = e.target.closest("tr[data-pg]"); if (!r) return; const k = r.dataset.pg; if (pexp.has(k)) pexp.delete(k); else pexp.add(k); renderPlanner(); });
 /* ---------------- блок автора (компонент author-block) ---------------- */
+// Режим съёмки для инструкции: #shot или #demo&shot — без попапа автора и без плавающих плашек (автора и «Инструкция»).
+const SHOT_MODE = /(^#|&)shot(&|$)/.test(location.hash);
+if (SHOT_MODE) document.documentElement.classList.add("shot");
 AuthorBlock.init({
   toolId: "ozon-supply-board",
+  popup: { enabled: !SHOT_MODE },
   campaign: "ozon-supply-board",
   colors: { accent: "#F91155", accentText: "#fff", link: "#005BFF", headFrom: "#090089", headTo: "#005BFF", headText: "#fff",
             surface: "#fff", ink: "#0B1033", muted: "#5B6482", line: "#D5DEE9", overlay: "rgba(9,0,137,.45)" }
 });
+
+// Вторая плашка рядом с бейджем автора: ссылка на инструкцию (только в этом инструменте, общий author-block не меняется).
+(function addHelpBadge() {
+  const author = document.querySelector(".ab-root .ab-badge");
+  if (!author) return;
+  const wrap = document.createElement("div");
+  wrap.className = "ab-badges";
+  author.parentNode.insertBefore(wrap, author);
+  const a = document.createElement("a");
+  a.className = "ab-badge ab-badge-help";
+  a.href = "https://zyamzin.ru/tools/ozon-supply-board?utm_source=tool&utm_medium=badge&utm_campaign=ozon_supply_board&utm_content=instruction#instrukciya";
+  a.target = "_blank"; a.rel = "noopener noreferrer";
+  const ic = document.createElement("i");
+  ic.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 1 1.5 1.5z"/></svg>';
+  const t = document.createElement("span");
+  t.textContent = "Инструкция по использованию";
+  a.appendChild(ic); a.appendChild(t);
+  wrap.appendChild(a); wrap.appendChild(author);
+})();
 
 /* ============================================================
    ДЕМО-РЕЖИМ: синтетические данные в формате ответов Ozon.
@@ -1816,7 +1851,7 @@ function buildDemo() {
     [7100003, "demo-tee", [["S", T + "футболка базовая"], ["M", T + "футболка базовая"], ["L", T + "футболка хлопковая базовая"], ["XL", T + "футболка хлопковая базовая"]]],
     [7100004, "demo-jogger", [["S", T + "брюки джогеры"], ["M", T + "брюки джогеры"], ["L", T + "брюки джогеры"]]],
     [0, "demo-cap", [["ONE", T + "кепка"]]],
-    [0, "demo-socks", [["36-40", T + "носки набор"], ["41-45", T + "носки набор"]]]
+    [0, "demo-socks", [["36-40", T + "носки 36–40"], ["41-45", T + "носки 41–45"]]]
   ];
   const skus = []; let sk = 9000001;
   cards.forEach(([mid, base, vars]) => vars.forEach(([sz, name]) => { skus.push({ sku: sk, name, offer_id: `${base}-${sz}`, barcode: "46000" + String(sk).padStart(8, "0"), product_id: 7000000 + sk, model_id: mid }); sk++; }));
@@ -1893,8 +1928,161 @@ function buildDemo() {
       postings.push({ posting_number: `DEMO-${p.sku}-${cid}-${d}`, status: rnd() < 0.06 ? "cancelled" : "delivered", age: d + rnd() * 3, products: [{ sku: p.sku, name: p.name, offer_id: p.offer_id, quantity: q }], financial_data: { cluster_from: cname, cluster_to: "" } });
     }
   }));
+
+  // ===== Учебные примеры для инструкции =====
+  // Добавлены ПОСЛЕ случайных данных и без генератора случайных чисел: старые данные демо не меняются.
+  // Заявки называются DEMO-01…DEMO-09 (в поиске на вкладке «Поставки» набрать «DEMO-0», чтобы увидеть только их).
+  [
+    [7100010, "demo-plaid", [["150x200", T + "плед флисовый 150×200 бежевый"], ["180x220", T + "плед флисовый 180×220 серый"], ["200x220", T + "плед флисовый 200×220 графит"]]],
+    [0, "demo-mug", [["400", T + "термокружка 400 мл"]]],
+    [0, "demo-bag", [["ONE", T + "рюкзак городской"]]],
+    [0, "demo-tag", [["ONE", T + "брелок для ключей"]]]
+  ].forEach(([mid, base, vars]) => vars.forEach(([sz, name]) => { skus.push({ sku: sk, name, offer_id: `${base}-${sz}`, barcode: "46000" + String(sk).padStart(8, "0"), product_id: 7000000 + sk, model_id: mid }); sk++; }));
+  const bySku = (offer) => skus.find((p) => p.offer_id === offer);
+  const actOv = new Map();
+  let gsid = 5000009001;
+  // box: { items: [[артикул, шт], …], pallet?: true }; dir: { cl, st, boxes, act? }
+  const guide = [
+    ["DEMO-01", 900009008, 1.5, "READY_TO_SUPPLY", 0, [
+      { cl: 4001, st: "READY_TO_SUPPLY", boxes: [
+        { items: [["demo-hoodie-M", 25], ["demo-hoodie-L", 25]] },
+        { items: [["demo-mug-400", 60]] },
+        { items: [["demo-plaid-150x200", 10], ["demo-bag-ONE", 20]] },
+        { items: [["demo-bridges-S", 15], ["demo-bridges-L", 15], ["demo-bridges-2XL", 10]] }] }]],
+    ["DEMO-02", 900009013, 3.5, "IN_TRANSIT", 1, [
+      { cl: 4001, st: "IN_TRANSIT", boxes: [
+        { items: [["demo-tee-M", 30], ["demo-tee-L", 20]] },
+        { items: [["demo-jogger-S", 20]] },
+        { items: [["demo-hoodie-XL", 15], ["demo-cap-ONE", 25]] }] },
+      { cl: 4002, st: "IN_TRANSIT", boxes: [
+        { pallet: true, items: [["demo-plaid-150x200", 40], ["demo-plaid-180x220", 40], ["demo-plaid-200x220", 40]] },
+        { items: [["demo-socks-36-40", 30]] }] },
+      { cl: 4003, st: "ACCEPTED_AT_SUPPLY_WAREHOUSE", boxes: [
+        { items: [["demo-mug-400", 30], ["demo-bag-ONE", 15]] }] }]],
+    ["DEMO-03", 900009015, 4.5, "ACCEPTED_AT_SUPPLY_WAREHOUSE", 0, [
+      { cl: 4004, st: "ACCEPTED_AT_SUPPLY_WAREHOUSE", boxes: [
+        { items: [["demo-jogger-M", 20]] },
+        { items: [["demo-jogger-L", 20], ["demo-tee-S", 10]] },
+        { items: [["demo-cap-ONE", 40]] }] }]],
+    ["DEMO-04", 900009017, 7, "REPORTS_CONFIRMATION_AWAITING", 0, [
+      { cl: 4001, st: "REPORTS_CONFIRMATION_AWAITING", act: { fact: { "demo-hoodie-L": 34, "demo-mug-400": 57, "demo-bag-ONE": 15 }, unidentified: 4 }, boxes: [
+        { items: [["demo-hoodie-L", 40]] },
+        { items: [["demo-mug-400", 60]] },
+        { items: [["demo-tee-M", 25], ["demo-bag-ONE", 15]] }] }]],
+    ["DEMO-05", 900009023, 14, "COMPLETED", 1, [
+      { cl: 4005, st: "COMPLETED", act: { fact: {}, unidentified: 0, state: "APPROVED" }, boxes: [
+        { items: [["demo-bridges-M", 30]] },
+        { items: [["demo-bridges-XL", 20], ["demo-bridges-3XL", 20]] }] },
+      { cl: 4006, st: "COMPLETED", act: { fact: {}, unidentified: 0, state: "APPROVED" }, boxes: [
+        { items: [["demo-tee-L", 40]] }] }]],
+    ["DEMO-06", 900009025, 10, "REPORT_REJECTED", 0, [
+      { cl: 4003, st: "REPORT_REJECTED", act: { fact: { "demo-socks-41-45": 0 }, unidentified: 0, state: "REJECTED" }, boxes: [
+        { items: [["demo-socks-41-45", 50]] },
+        { items: [["demo-cap-ONE", 20], ["demo-socks-36-40", 20]] }] }]],
+    ["DEMO-07", 900009027, 11, "REJECTED_AT_SUPPLY_WAREHOUSE", 1, [
+      { cl: 4002, st: "REJECTED_AT_SUPPLY_WAREHOUSE", boxes: [
+        { items: [["demo-jogger-S", 15], ["demo-jogger-M", 15]] }] }]],
+    ["DEMO-08", 900009029, 5, "OVERDUE", 0, [
+      { cl: 4001, st: "OVERDUE", boxes: [
+        { items: [["demo-hoodie-M", 30]] },
+        { items: [["demo-tag-ONE", 100]] }] }]],
+    ["DEMO-09", 900009033, 9, "CANCELLED", 1, [
+      { cl: 4006, st: "CANCELLED", boxes: [{ items: [["demo-mug-400", 40]] }] }]],
+    // ---- Дополнительные случаи (DEMO-10…15): в поиске «DEMO-0» они не попадают, чтобы не менять итоги основных примеров. Набрать «DEMO-1».
+    // DEMO-10: приёмка тянется дольше 5 дней (статус обновлён 8 дней назад), срок согласования акта скоро
+    ["DEMO-10", 900009041, 13, "ACCEPTANCE_AT_STORAGE_WAREHOUSE", 1, [
+      { cl: 4002, st: "ACCEPTANCE_AT_STORAGE_WAREHOUSE", act: { fact: { "demo-tee-M": 20, "demo-tee-L": 20, "demo-cap-ONE": 20 }, unidentified: 0, deadlineDays: 1 }, boxes: [
+        { items: [["demo-tee-M", 30]] },
+        { items: [["demo-tee-L", 30]] },
+        { items: [["demo-cap-ONE", 40]] }] }]],
+    // DEMO-11: заявка, разбитая на много поставок (через хаб): 9 направлений в разных статусах
+    ["DEMO-11", 900009043, 12, "IN_TRANSIT", 0, [
+      ...[[4001, "COMPLETED"], [4002, "COMPLETED"], [4003, "COMPLETED"], [4004, "IN_TRANSIT"], [4005, "IN_TRANSIT"], [4006, "IN_TRANSIT"], [4001, "ACCEPTED_AT_SUPPLY_WAREHOUSE"], [4003, "ACCEPTED_AT_SUPPLY_WAREHOUSE"], [4005, "REPORTS_CONFIRMATION_AWAITING"]].map(([cl, st], n) => (
+        { cl, st, act: st === "COMPLETED" ? { fact: {}, unidentified: 0, state: "APPROVED", deadlineDays: -3 } : st === "REPORTS_CONFIRMATION_AWAITING" ? { fact: { "demo-jogger-S": 17 }, unidentified: 0, deadlineDays: 6 } : undefined,
+          boxes: [{ items: [[["demo-hoodie-L", "demo-tee-M", "demo-jogger-S"][n % 3], 10 + (n % 3) * 5]] }, ...(n % 2 ? [{ items: [["demo-cap-ONE", 10]] }] : [])] }))]],
+    // DEMO-12: рядом с актом приёмки есть акт брака и акт излишков, у всех разные сроки
+    ["DEMO-12", 900009061, 8, "REPORTS_CONFIRMATION_AWAITING", 0, [
+      { cl: 4001, st: "REPORTS_CONFIRMATION_AWAITING", act: { fact: { "demo-jogger-M": 56 }, unidentified: 0, deadlineDays: 3, extra: [
+        { type: "DEFECT", declared: 0, fact: 4, approved: 0, deadlineDays: 1, lines: [["demo-jogger-M", 0, 4, 0]] },
+        { type: "SURPLUS", declared: 0, fact: 5, approved: 0, deadlineDays: 9, lines: [["demo-tee-S", 0, 5, 0]] }] }, boxes: [
+        { items: [["demo-jogger-M", 30]] },
+        { items: [["demo-jogger-M", 30]] }] }]],
+    // DEMO-13: расхождение всего в 1 шт., срок ещё далеко
+    ["DEMO-13", 900009063, 6, "REPORTS_CONFIRMATION_AWAITING", 1, [
+      { cl: 4003, st: "REPORTS_CONFIRMATION_AWAITING", act: { fact: { "demo-bag-ONE": 49 }, unidentified: 0, deadlineDays: 9 }, boxes: [
+        { items: [["demo-bag-ONE", 50]] }] }]],
+    // DEMO-14: срок согласования прошёл, акт согласован автоматически
+    ["DEMO-14", 900009065, 20, "COMPLETED", 0, [
+      { cl: 4004, st: "COMPLETED", act: { fact: { "demo-socks-36-40": 40 }, unidentified: 0, state: "AUTO_APPROVED", deadlineDays: -3 }, boxes: [
+        { items: [["demo-socks-36-40", 45]] }] }]],
+    // DEMO-15: акт без расхождений (заявлено = принято), ждёт согласования
+    ["DEMO-15", 900009067, 5, "REPORTS_CONFIRMATION_AWAITING", 1, [
+      { cl: 4006, st: "REPORTS_CONFIRMATION_AWAITING", act: { fact: {}, unidentified: 0, deadlineDays: 7 }, boxes: [
+        { items: [["demo-tag-ONE", 80]] }] }]]
+  ];
+  // Сколько дней назад обновлялся статус (иначе created + 3 дня, но не позже «сейчас»)
+  const updAgo = { "DEMO-10": 8, "DEMO-11": 2 };
+  guide.forEach(([num, id, age, ost, dpi, dirs]) => {
+    const created = new Date(now - age * 86400000);
+    const slot = new Date(created.getTime() + 86400000); slot.setUTCHours(10, 0, 0, 0);
+    const to = new Date(slot.getTime() + 3600000);
+    const o = {
+      order_id: id, order_number: num, created_date: created.toISOString(), state: ost,
+      state_updated_date: new Date(num in updAgo ? now - updAgo[num] * 86400000 : Math.min(now, created.getTime() + 3 * 86400000)).toISOString(), data_filling_deadline: null,
+      drop_off_warehouse: { warehouse_id: 1, name: dropoffs[dpi][0], address: dropoffs[dpi][1] },
+      timeslot: { timeslot: { from: slot.toISOString(), to: to.toISOString() }, timezone_info: { offset: "10800s", iana_name: "Europe/Moscow" } }, supplies: []
+    };
+    dirs.forEach((d) => {
+      const bid = `demo-bundle-${gsid}`, total = new Map();
+      d.boxes.forEach((b) => b.items.forEach(([off, q]) => total.set(off, (total.get(off) || 0) + q)));
+      bundles.set(bid, [...total].map(([off, q]) => ({ ...bySku(off), quantity: q })));
+      const list = [];
+      d.boxes.forEach((b, c) => {
+        const cb = `demo-box-${gsid}-${c}`;
+        bundles.set(cb, b.items.map(([off, q]) => ({ ...bySku(off), quantity: q })));
+        const td = new Date(slot.getTime() + (c + 1) * 86400000).toISOString().slice(0, 10);
+        list.push({ cargo_id: gsid * 1000 + c, type: b.pallet ? "PALLET" : "BOX", bundle_id: cb, tracking_info: { date: td, status: trackStatus(d.st), type: "ACTUAL_ARRIVAL" } });
+      });
+      cargoes.set(gsid, list);
+      if (d.act) actOv.set(gsid, d.act);
+      const stored = ["IN_TRANSIT", "COMPLETED", "REPORTS_CONFIRMATION_AWAITING", "ACCEPTANCE_AT_STORAGE_WAREHOUSE", "REPORT_REJECTED"].includes(d.st);
+      o.supplies.push({ state: d.st, supply_id: gsid, storage_warehouse: stored ? { warehouse_id: 2, name: "ДЕМО_РФЦ_" + (d.cl % 10), address: "Россия, Город Демо" } : null, is_crossdock: false, bundle_id: bid, macrolocal_cluster_id: d.cl });
+      gsid += 2;
+    });
+    orders.push(o);
+  });
+  // Остатки и продажи для планера: [доступно, в пути, продаж/сут, резерв] по кластерам 4001…4006
+  // Запас дней = (доступно + в пути) ÷ продаж/сут: <7 — «Риск out-of-stock», <14 — «Скоро кончится».
+  const gStock = {
+    "demo-plaid-150x200": { 4001: [8, 0, 1.6, 3], 4002: [14, 4, 1.5, 1], 4003: [60, 0, 1.2, 0], 4004: [30, 20, 1.0, 2], 4005: [0, 0, 0.5, 0], 4006: [25, 0, 0.9, 1] },
+    "demo-plaid-180x220": { 4001: [40, 0, 1.9, 4], 4002: [6, 0, 1.0, 0], 4003: [11, 0, 1.0, 1], 4004: [45, 0, 0.8, 0], 4005: [10, 10, 0.6, 0], 4006: [4, 0, 0.7, 1] },
+    "demo-plaid-200x220": { 4001: [15, 0, 1.5, 2], 4002: [50, 0, 0.8, 0], 4003: [40, 0, 0, 0], 4004: [35, 0, 0.5, 0], 4005: [28, 0, 0.4, 0], 4006: [33, 0, 0.6, 1] },
+    "demo-mug-400": { 4001: [12, 0, 2.4, 5], 4002: [70, 0, 1.2, 2], 4003: [5, 30, 1.0, 0], 4004: [18, 0, 1.0, 1], 4005: [0, 0, 0, 0], 4006: [9, 0, 0.7, 0] },
+    "demo-bag-ONE": { 4001: [55, 0, 1.0, 2], 4002: [9, 0, 0.9, 1], 4003: [30, 0, 0.6, 0], 4004: [22, 0, 0.7, 0], 4005: [40, 0, 0.3, 0], 4006: [16, 6, 0.8, 0] },
+    "demo-tag-ONE": { 4001: [80, 0, 0, 0], 4002: [45, 0, 0, 0], 4003: [30, 0, 0, 0], 4004: [30, 0, 0, 0], 4005: [20, 0, 0, 0], 4006: [25, 0, 0, 0] }
+  };
+  const gRow = (p, wid, wname, cid, cname, av, tr, ads, pend) => ({
+    sku: p.sku, name: p.name, offer_id: p.offer_id, warehouse_id: wid, warehouse_name: wname, cluster_id: cid, cluster_name: cname,
+    ads, turnover_grade: ads > 2.5 ? "DEFICIT" : ads > 1.5 ? "POPULAR" : ads > 0.7 ? "ACTUAL" : ads > 0.15 ? "SURPLUS" : "NO_SALES", idc: 0,
+    available_stock_count: av, valid_stock_count: av, waiting_docs_stock_count: 0, transit_defect_stock_count: 0, stock_defect_stock_count: 0, requested_stock_count: 0,
+    transit_stock_count: tr, return_from_customer_stock_count: 0, return_to_seller_stock_count: 0, idc_cluster: 0, ads_cluster: ads,
+    turnover_grade_cluster: ads > 2.5 ? "DEFICIT" : ads > 1.5 ? "POPULAR" : ads > 0.7 ? "ACTUAL" : ads > 0.15 ? "SURPLUS" : "NO_SALES", macrolocal_cluster_id: cid, outbound_pending_delivery: pend
+  });
+  Object.entries(gStock).forEach(([off, byCl]) => {
+    const p = bySku(off);
+    clusters.forEach(([cid, cname]) => {
+      const [av, tr, ads, pend] = byCl[cid];
+      const second = Math.floor(av * 0.3);
+      stocks.push(gRow(p, cid * 10, WH[cid][0], cid, cname, av - second, tr, ads, pend));
+      stocks.push(gRow(p, cid * 10 + 1, WH[cid][1], cid, cname, second, 0, ads, 0));
+      for (let d = 0; ads && d < 60; d += 3) if (Math.round(ads * 3 * (d / 3 % 2 ? 1.2 : 0.8)) > 0) postings.push({ posting_number: `DEMO-${p.sku}-${cid}-${d}`, status: "delivered", age: d + 0.5, products: [{ sku: p.sku, name: p.name, offer_id: p.offer_id, quantity: Math.round(ads * 3 * (d / 3 % 2 ? 1.2 : 0.8)) }], financial_data: { cluster_from: cname, cluster_to: "" } });
+    });
+  });
+  // Склад без названия кластера: город берётся из названия склада («САМАРА_РФЦ_НОВЫЙ» → Самара)
+  stocks.push(gRow(bySku("demo-plaid-150x200"), 7001, "САМАРА_РФЦ_НОВЫЙ", 0, "", 14, 6, 0, 2));
+  stocks.push(gRow(bySku("demo-mug-400"), 7001, "САМАРА_РФЦ_НОВЫЙ", 0, "", 20, 0, 0, 0));
   postings.sort((a, b) => a.age - b.age);
-  return { clusters, orders, bundles, cargoes, stocks, skus, postings };
+  return { clusters, orders, bundles, cargoes, stocks, skus, postings, actOv };
 }
 async function demoFetch(path, body) {
   if (!DEMO) DEMO = buildDemo();
@@ -1914,14 +2102,22 @@ async function demoFetch(path, body) {
     case "/v1/supply-order/act/summary/get": {
       const o = D.orders.find((x) => x.order_id === body.order_id);
       return ok({ supplies_acts: (o ? o.supplies : []).map((s) => {
-        const q = (D.bundles.get(s.bundle_id) || []).reduce((n, i) => n + i.quantity, 0);
-        return { supply_id: s.supply_id, is_agreement_completed: false, supply_acts: [{ act_id: s.supply_id + 7, act_number: String(s.supply_id), type: "ACCEPTANCE", deadline_utc: new Date(Date.now() + 5 * 86400000).toISOString(), act_state: "AWAITING_APPROVAL_BY_SELLER", summary: { fact_quantity: q - 5, approved_quantity: 0, unidentified_quantity: 0, declared_quantity: q } }] };
+        const lines = D.bundles.get(s.bundle_id) || [], q = lines.reduce((n, i) => n + i.quantity, 0), ov = D.actOv.get(s.supply_id);
+        // ov — учебный пример: факт по артикулам и «не опознано» заданы вручную
+        const fact = ov ? lines.reduce((n, i) => n + (i.offer_id in ov.fact ? ov.fact[i.offer_id] : i.quantity), 0) : q - 5;
+        const appr = ov && (ov.state === "APPROVED" || ov.state === "AUTO_APPROVED") ? fact : 0;
+        const dl = (days) => new Date(Date.now() + days * 86400000).toISOString();
+        const acts = [{ act_id: s.supply_id + 7, act_number: String(s.supply_id), type: "ACCEPTANCE", deadline_utc: dl(ov && ov.deadlineDays != null ? ov.deadlineDays : 5), act_state: (ov && ov.state) || "AWAITING_APPROVAL_BY_SELLER", summary: { fact_quantity: fact, approved_quantity: appr, unidentified_quantity: ov ? ov.unidentified : 0, declared_quantity: q } }];
+        ((ov && ov.extra) || []).forEach((x, n) => acts.push({ act_id: s.supply_id + 8 + n, act_number: String(s.supply_id) + "-" + (n + 2), type: x.type, deadline_utc: dl(x.deadlineDays), act_state: x.state || "AWAITING_APPROVAL_BY_SELLER", summary: { fact_quantity: x.fact, approved_quantity: x.approved, unidentified_quantity: 0, declared_quantity: x.declared } }));
+        return { supply_id: s.supply_id, is_agreement_completed: false, supply_acts: acts };
       }) });
     }
     case "/v1/supply-order/act/product/get": {
       const sup = D.orders.flatMap((o) => o.supplies).find((s) => s.supply_id === body.supply_id);
-      const items = ((sup && D.bundles.get(sup.bundle_id)) || []).map((i) => ({ sku_info: { sku: i.sku, name: i.name, offer_id: i.offer_id }, declared_quantity: i.quantity, fact_quantity: i.quantity, approved_quantity: 0 }));
-      return ok({ supply_id: body.supply_id, supply_acts: [{ type: "ACCEPTANCE", items, unidentified_quantity: 0 }], skus_defects: [] });
+      const ov = D.actOv.get(body.supply_id);
+      const items = ((sup && D.bundles.get(sup.bundle_id)) || []).map((i) => ({ sku_info: { sku: i.sku, name: i.name, offer_id: i.offer_id }, declared_quantity: i.quantity, fact_quantity: ov && i.offer_id in ov.fact ? ov.fact[i.offer_id] : i.quantity, approved_quantity: ov && (ov.state === "APPROVED" || ov.state === "AUTO_APPROVED") ? (i.offer_id in ov.fact ? ov.fact[i.offer_id] : i.quantity) : 0 }));
+      const extraActs = ((ov && ov.extra) || []).map((x) => ({ type: x.type, unidentified_quantity: 0, items: (x.lines || []).map(([off, d, f, a]) => { const p = D.skus.find((k) => k.offer_id === off); return { sku_info: { sku: p.sku, name: p.name, offer_id: p.offer_id }, declared_quantity: d, fact_quantity: f, approved_quantity: a }; }) }));
+      return ok({ supply_id: body.supply_id, supply_acts: [{ type: "ACCEPTANCE", items, unidentified_quantity: ov ? ov.unidentified : 0 }, ...extraActs], skus_defects: [] });
     }
     case "/v3/product/list": return ok({ result: { items: D.skus.map((p) => ({ product_id: p.product_id, offer_id: p.offer_id, archived: false, sku: p.sku })), total: D.skus.length, last_id: "" } });
     case "/v3/product/info/list": {
@@ -1945,7 +2141,7 @@ async function demoFetch(path, body) {
 /* ---------------- запуск ---------------- */
 (function boot() {
   $("days").value = "30";
-  if (location.hash === "#demo") return start({ id: "demo", key: "demo" }, true, 60);
+  if (location.hash === "#demo" || location.hash === "#demo&shot") return start({ id: "demo", key: "demo" }, true, 60);
   const saved = store.read();
   if (saved) { $("inId").value = saved.id; start(saved, false, 30); }
   else showLogin("");
