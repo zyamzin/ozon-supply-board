@@ -130,7 +130,7 @@
 Меня зовут **Евгений Зямзин**. Я создаю инструменты для оптимизации и упрощения бизнеса, и делюсь ими здесь:
 
 - Telegram-канал: <https://t.me/evgenyzyamzin>
-- Сайт: [zyamzin.ru](https://zyamzin.ru/?utm_source=github&utm_medium=readme&utm_campaign=ozon_stock)
+- Сайт: [zyamzin.ru](https://zyamzin.ru/?utm_source=github&utm_medium=readme&utm_campaign=ozon-supply-board)
 
 ## Лицензия
 
