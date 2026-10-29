@@ -178,77 +178,6 @@ tr.risk-mid td:first-child{box-shadow:inset 4px 0 0 #FF9F1C}
   .progress{padding:10px 14px}
 }
 @media (prefers-reduced-motion:reduce){.bar>i{transition:none}}
-/* author-block.css — «блок автора»: бейдж, подвал, попап. Префикс .ab-, ничего не трогает на странице.
-   Цвета меняются переменными --ab-* (JS ставит их из config.colors на .ab-root). Без hover-свечения. */
-.ab-root{
-  --ab-accent:#F91155;        /* главная кнопка попапа */
-  --ab-accent-text:#fff;
-  --ab-link:#005BFF;          /* ссылки */
-  --ab-head-from:#090089;     /* шапка попапа: градиент 45° */
-  --ab-head-to:#005BFF;
-  --ab-head-text:#fff;
-  --ab-surface:#fff;          /* фон бейджа и попапа */
-  --ab-ink:#0B1033;
-  --ab-muted:#5B6482;
-  --ab-line:#D5DEE9;
-  --ab-overlay:rgba(9,0,137,.45);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  font-size:14px;line-height:1.4;color:var(--ab-ink);
-}
-.ab-root *,.ab-root *::before,.ab-root *::after{box-sizing:border-box}
-.ab-root a{color:var(--ab-link)}
-.ab-root [hidden]{display:none!important}
-
-/* --- бейдж справа внизу --- */
-.ab-badge{position:fixed;right:14px;bottom:14px;z-index:30;display:flex;align-items:center;gap:8px;
-  background:var(--ab-surface);color:var(--ab-ink);text-decoration:none;
-  border:1px solid var(--ab-line);border-radius:999px;padding:4px 14px 4px 4px;font-size:13px;font-weight:600;
-  box-shadow:0 2px 8px rgba(11,16,51,.14)}
-.ab-badge:hover{text-decoration:underline}
-.ab-badge:focus-visible,.ab-btn:focus-visible,.ab-x:focus-visible,.ab-root a:focus-visible{outline:2px solid var(--ab-link);outline-offset:2px}
-.ab-badge img{width:34px;height:34px;border-radius:50%;object-fit:cover;display:block;flex:none;background:var(--ab-line)}
-.ab-badge span{white-space:nowrap;color:var(--ab-ink)}
-.ab-badge b{font-weight:700}
-
-/* --- подвал --- */
-.ab-footer{display:block;max-width:960px;margin:28px auto 0;padding:18px 16px 76px;border-top:1px solid var(--ab-line);
-  color:var(--ab-muted);font-size:13px;line-height:1.5;text-align:center}
-.ab-footer p{margin:0 0 4px}
-.ab-footer .ab-sub{font-size:12px}
-.ab-footer .ab-disclaimer{margin-top:10px;font-size:11px;line-height:1.4;color:var(--ab-muted);opacity:.8}
-
-/* --- попап --- */
-.ab-overlay{position:fixed;inset:0;z-index:1000;background:var(--ab-overlay);display:flex;align-items:center;justify-content:center;padding:16px}
-.ab-modal{position:relative;width:min(440px,100%);max-height:calc(100vh - 32px);overflow-y:auto;background:var(--ab-surface);
-  border-radius:16px;box-shadow:0 12px 40px rgba(9,0,137,.3)}
-.ab-head{background:linear-gradient(45deg,var(--ab-head-from) 70%,var(--ab-head-to));color:var(--ab-head-text);
-  border-radius:16px 16px 0 0;padding:22px 24px 18px;display:flex;gap:14px;align-items:center}
-.ab-head img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.85);flex:none;background:var(--ab-line)}
-.ab-head h2{margin:0;font-size:19px;line-height:1.25;color:inherit;padding-right:22px}
-.ab-body{padding:18px 24px 22px}
-.ab-body p{margin:0 0 16px;color:var(--ab-ink);font-size:14.5px;line-height:1.5}
-.ab-btn{display:block;width:100%;text-align:center;text-decoration:none;font:inherit;font-weight:700;font-size:15px;
-  background:var(--ab-accent);color:var(--ab-accent-text)!important;border:0;border-radius:12px;padding:12px 16px;cursor:pointer}
-.ab-btn:hover{filter:none;text-decoration:underline}
-.ab-alt{display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--ab-link)}
-.ab-x{position:absolute;top:10px;right:10px;width:34px;height:34px;border:0;border-radius:50%;background:transparent;color:var(--ab-head-text);
-  font-size:24px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
-
-/* --- мобильная версия: бейдж — только аватар, чтобы не закрывать контент и кнопки --- */
-@media (max-width:640px){
-  .ab-badge{right:10px;bottom:10px;padding:3px;gap:0}
-  .ab-badge span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-  .ab-badge img{width:36px;height:36px}
-  .ab-footer{padding:16px 14px 64px;font-size:12px;text-align:left}
-  .ab-head{padding:18px 18px 14px}
-  .ab-body{padding:16px 18px 20px}
-  .ab-head h2{font-size:17px}
-}
-@media (prefers-reduced-motion:no-preference){
-  .ab-overlay{animation:ab-fade .18s ease-out}
-  @keyframes ab-fade{from{opacity:0}to{opacity:1}}
-}
-
 </style>
 </head>
 <body>
@@ -399,170 +328,6 @@ tr.risk-mid td:first-child{box-shadow:inset 4px 0 0 #FF9F1C}
 <aside id="drawer" hidden aria-label="Карточка поставки"></aside>
 
 <script>
-/*!
- * author-block.js — переиспользуемый «блок автора» для одностраничных инструментов.
- * Бейдж справа внизу + подвал + попап (один раз, после первой успешной загрузки данных).
- * Без зависимостей и без сети: аватар встроен (base64 webp). Тексты вставляются через textContent.
- * Нужен CSS из author-block.css (в одно-файловом инструменте вставляется в <style>).
- * Использование:  AuthorBlock.init({ toolId: "ozon-stock", colors: {...}, links: {...}, texts: {...} });
- *                 AuthorBlock.onSuccess();   // вызвать после первой успешной загрузки данных (в т.ч. демо)
- */
-(function (root) {
-  "use strict";
-  var AVATAR = "data:image/webp;base64,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";
-
-  var DEFAULTS = {
-    toolId: "tool",                 // имя инструмента: ключ флага попапа и utm_campaign по умолчанию
-    campaign: null,                 // utm_campaign (если null — берётся из toolId)
-    avatar: AVATAR,                 // data: URI или URL; по умолчанию встроенный 96px
-    author: { name: "Евгений Зямзин" },
-    links: {
-      telegram: "https://t.me/evgenyzyamzin",
-      site: "https://zyamzin.ru/",                // utm добавляются автоматически (см. utm)
-      utm: { source: "tool" },                    // utm_medium = badge | footer | popup подставляется само
-      // Задел на будущее — пока НЕ используется, ссылки только хранятся в конфиге:
-      telegramBot: null,                          // напр. "https://t.me/<bot>?start=<toolId>"
-      bonus: null                                 // описание/ссылка на бонус за переход
-    },
-    texts: {
-      badge: "Сделал",                            // «Сделал <b>Евгений Зямзин</b>»
-      badgeLabel: "Автор инструмента — Евгений Зямзин. Открыть сайт",
-      footer: "Бесплатный инструмент от Евгения Зямзина. Оптимизирую онлайн-бизнес: где теряются деньги и заказы.",
-      footerTelegram: "Больше инструментов — в Telegram",
-      footerSite: "zyamzin.ru",
-      disclaimer: "Инструмент бесплатный и распространяется как есть. Используйте на своё усмотрение и сверяйте данные с личным кабинетом Ozon. Автор не несёт ответственности за точность расчётов.", // мелкий текст в подвале; "" — не показывать; переопределяется под инструмент
-      popupTitle: "Видите теперь, где ваш товар?",
-      popupBody: "Я делаю такие инструменты для селлеров и интернет-магазинов: нахожу, где бизнес теряет деньги и заказы, и как это исправить. Новые инструменты и разборы — в моём Telegram-канале",
-      popupButton: "Перейти в Telegram-канал",
-      popupAlt: "Обо мне — zyamzin.ru",
-      close: "Закрыть"
-    },
-    colors: {},                     // переопределения --ab-*: accent, accentText, link, headFrom, headTo, headText, surface, ink, muted, line, overlay
-    popup: { enabled: true, delayMs: 700 },
-    footer: { enabled: true, mount: null },       // mount: CSS-селектор/элемент; по умолчанию — конец <body>
-    badge: { enabled: true }
-  };
-  var COLOR_VARS = { accent: "--ab-accent", accentText: "--ab-accent-text", link: "--ab-link", headFrom: "--ab-head-from",
-    headTo: "--ab-head-to", headText: "--ab-head-text", surface: "--ab-surface", ink: "--ab-ink", muted: "--ab-muted",
-    line: "--ab-line", overlay: "--ab-overlay" };
-
-  var cfg = null, rootEl = null, scheduled = false, lastFocus = null;
-
-  function merge(a, b) {
-    var o = {}, k;
-    for (k in a) o[k] = a[k];
-    for (k in (b || {})) {
-      if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") o[k] = merge(a[k], b[k]);
-      else o[k] = b[k];
-    }
-    return o;
-  }
-  function el(tag, cls, text) {
-    var e = document.createElement(tag);
-    if (cls) e.className = cls;
-    if (text != null) e.textContent = text;
-    return e;
-  }
-  function withUtm(medium) {
-    var u = cfg.links.utm || {}, base = cfg.links.site, p = [];
-    p.push("utm_source=" + encodeURIComponent(u.source || "tool"));
-    p.push("utm_medium=" + encodeURIComponent(medium));
-    p.push("utm_campaign=" + encodeURIComponent(cfg.campaign || cfg.toolId));
-    return base + (base.indexOf("?") < 0 ? "?" : "&") + p.join("&");
-  }
-  function ext(a, href) { a.href = href; a.target = "_blank"; a.rel = "noopener noreferrer"; return a; }
-  function flagKey() { return "authorBlock:" + cfg.toolId + ":popupSeen"; }
-  function seen() { try { return localStorage.getItem(flagKey()) === "1"; } catch (e) { return false; } }
-  function mark() { try { localStorage.setItem(flagKey(), "1"); } catch (e) {} }
-
-  function buildBadge() {
-    var a = ext(el("a", "ab-badge"), withUtm("badge"));
-    a.setAttribute("aria-label", cfg.texts.badgeLabel);
-    var img = el("img"); img.src = cfg.avatar; img.alt = ""; img.width = 34; img.height = 34;
-    var s = el("span", null, cfg.texts.badge + " ");
-    s.appendChild(el("b", null, cfg.author.name));
-    a.appendChild(img); a.appendChild(s);
-    rootEl.appendChild(a);
-  }
-  function buildFooter() {
-    var f = el("footer", "ab-footer ab-root"); applyColors(f);
-    var p = el("p", null, cfg.texts.footer + " ");
-    p.appendChild(ext(el("a", null, cfg.texts.footerTelegram), cfg.links.telegram));
-    p.appendChild(document.createTextNode(". "));
-    var q = el("p", "ab-sub");
-    q.appendChild(ext(el("a", null, cfg.texts.footerSite), withUtm("footer")));
-    f.appendChild(p); f.appendChild(q);
-    if (cfg.texts.disclaimer) f.appendChild(el("p", "ab-disclaimer", cfg.texts.disclaimer));
-    var m = cfg.footer.mount;
-    var host = typeof m === "string" ? document.querySelector(m) : (m || document.body);
-    host.appendChild(f);
-  }
-  function applyColors(node) {
-    for (var k in cfg.colors) if (COLOR_VARS[k] && cfg.colors[k]) node.style.setProperty(COLOR_VARS[k], cfg.colors[k]);
-  }
-
-  function closePopup() {
-    var o = document.getElementById("ab-popup");
-    if (!o) return;
-    o.parentNode.removeChild(o);
-    document.removeEventListener("keydown", onKey, true);
-    if (lastFocus && lastFocus.focus) try { lastFocus.focus(); } catch (e) {}
-  }
-  function onKey(e) {
-    if (e.key === "Escape") { e.stopPropagation(); closePopup(); return; }
-    if (e.key === "Tab") {   // фокус не уходит за попап
-      var items = document.querySelectorAll("#ab-popup button, #ab-popup a");
-      if (!items.length) return;
-      var first = items[0], last = items[items.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
-  }
-  function showPopup() {
-    if (document.getElementById("ab-popup")) return;
-    mark();
-    lastFocus = document.activeElement;
-    var ov = el("div", "ab-overlay ab-root"); ov.id = "ab-popup"; applyColors(ov);
-    var m = el("div", "ab-modal"); m.setAttribute("role", "dialog"); m.setAttribute("aria-modal", "true"); m.setAttribute("aria-labelledby", "ab-title");
-    var head = el("div", "ab-head");
-    var img = el("img"); img.src = cfg.avatar; img.alt = ""; img.width = 56; img.height = 56;
-    var h = el("h2", null, cfg.texts.popupTitle); h.id = "ab-title";
-    head.appendChild(img); head.appendChild(h);
-    var x = el("button", "ab-x", "\u00d7"); x.type = "button"; x.setAttribute("aria-label", cfg.texts.close);
-    x.addEventListener("click", closePopup);
-    var body = el("div", "ab-body");
-    body.appendChild(el("p", null, cfg.texts.popupBody));
-    body.appendChild(ext(el("a", "ab-btn", cfg.texts.popupButton), cfg.links.telegram));
-    body.appendChild(ext(el("a", "ab-alt", cfg.texts.popupAlt), withUtm("popup")));
-    m.appendChild(head); m.appendChild(x); m.appendChild(body); ov.appendChild(m);
-    ov.addEventListener("mousedown", function (e) { if (e.target === ov) closePopup(); });
-    document.body.appendChild(ov);
-    document.addEventListener("keydown", onKey, true);
-    x.focus();
-  }
-
-  var AuthorBlock = {
-    init: function (userCfg) {
-      if (rootEl) return;
-      cfg = merge(DEFAULTS, userCfg || {});
-      rootEl = el("div", "ab-root"); applyColors(rootEl);
-      if (cfg.badge.enabled) buildBadge();
-      document.body.appendChild(rootEl);
-      if (cfg.footer.enabled) buildFooter();
-    },
-    /** Вызвать после первой успешной загрузки данных (реальной или демо). Попап покажется один раз. */
-    onSuccess: function () {
-      if (!cfg || !cfg.popup.enabled || scheduled || seen()) return;
-      scheduled = true;                     // повторные вызовы игнорируются
-      setTimeout(showPopup, cfg.popup.delayMs);
-    },
-    show: function () { if (cfg) showPopup(); },       // принудительно (для тестов/кнопки)
-    reset: function () { try { localStorage.removeItem(flagKey()); } catch (e) {} scheduled = false; },
-    config: function () { return cfg; }
-  };
-  root.AuthorBlock = AuthorBlock;
-})(typeof window !== "undefined" ? window : this);
-
 "use strict";
 /* Поставки и остатки Ozon — неофициальный инструмент.
    Один файл, без зависимостей. Запросы идут только на api-seller.ozon.ru. */
@@ -1361,7 +1126,6 @@ async function runLoad() {
     }
     if (id !== S.loadId) return;
     renderAll();
-    AuthorBlock.onSuccess(); // попап автора — один раз после первой успешной загрузки (в т.ч. демо)
   } catch (e) {
     if (id !== S.loadId) return;
     if (e.name === "AbortError") setErr("Загрузка отменена.");
@@ -1790,13 +1554,6 @@ $("btnPlanCsv").addEventListener("click", downloadPlanCsv);
 $("btnPlanXlsx").addEventListener("click", downloadPlanXlsx);
 $("pOzon").addEventListener("change", () => { $("pOzonHint").hidden = !$("pOzon").checked; $("pOzonMsg").textContent = ""; });
 $("planTable").addEventListener("click", (e) => { const r = e.target.closest("tr[data-pg]"); if (!r) return; const k = r.dataset.pg; if (pexp.has(k)) pexp.delete(k); else pexp.add(k); renderPlanner(); });
-/* ---------------- блок автора (компонент author-block) ---------------- */
-AuthorBlock.init({
-  toolId: "ozon-supply-board",
-  campaign: "ozon-supply-board",
-  colors: { accent: "#F91155", accentText: "#fff", link: "#005BFF", headFrom: "#090089", headTo: "#005BFF", headText: "#fff",
-            surface: "#fff", ink: "#0B1033", muted: "#5B6482", line: "#D5DEE9", overlay: "rgba(9,0,137,.45)" }
-});
 
 /* ============================================================
    ДЕМО-РЕЖИМ: синтетические данные в формате ответов Ozon.
