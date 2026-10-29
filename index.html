@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src https://api-seller.ozon.ru; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light">
+<title>Поставки и остатки Ozon — неофициальный инструмент</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23005BFF'/%3E%3Crect x='7' y='9' width='18' height='4' rx='2' fill='%23fff'/%3E%3Crect x='7' y='15' width='12' height='4' rx='2' fill='%23fff'/%3E%3Crect x='7' y='21' width='15' height='4' rx='2' fill='%23F91155'/%3E%3C/svg%3E">
+<style>
+:root{
+  --blue:#005BFF; --night:#090089; --pink:#F91155; --sky:#00A2FF; --aqua:#28D1EB;
+  --bg:#F0F4F7; --green:#06CA99; --yellow:#FAE670;
+  --ink:#0B1033; --muted:#5B6482; --line:#D5DEE9; --white:#fff; --soft:#E6EDF6;
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:14px;line-height:1.4;min-height:100vh}
+h1,h2,h3{margin:0}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+[hidden]{display:none!important}
+.muted{color:var(--muted)}
+.btn{border:1px solid transparent;border-radius:10px;padding:9px 16px;font-weight:600;min-height:38px}
+.btn.primary{background:var(--pink);color:#fff}
+.btn.ghost{background:var(--white);border-color:var(--line);color:var(--ink)}
+.btn.onDark{background:transparent;border-color:rgba(255,255,255,.55);color:#fff}
+.btn:disabled{opacity:.5;cursor:default}
+.pill{border:1px solid var(--line);background:var(--white);border-radius:999px;padding:6px 12px;font-size:13px}
+.pill.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.top{background:linear-gradient(45deg,var(--night) 70%,var(--blue));color:#fff;padding:14px 20px 0}
+.topRow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.badge-unofficial{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 10px;font-size:12px}
+.spacer{flex:1}
+.demoTag{background:var(--yellow);color:var(--ink);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
+.tabs{display:flex;gap:4px;margin-top:12px}
+.tab{background:transparent;border:0;color:rgba(255,255,255,.78);padding:10px 18px;border-radius:10px 10px 0 0;font-weight:600}
+.tab.active{background:var(--bg);color:var(--blue)}
+.loginWrap{max-width:560px;margin:0 auto;padding:28px 16px 60px}
+.loginHead{background:linear-gradient(45deg,var(--night) 70%,var(--blue));color:#fff;border-radius:var(--radius) var(--radius) 0 0;padding:22px 24px}
+.loginHead h1{font-size:24px;line-height:1.15;margin-bottom:6px}
+.loginHead p{margin:0;opacity:.85}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius)}
+.loginCard{border-radius:0 0 var(--radius) var(--radius);border-top:0;padding:22px 24px}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.field>span{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+.in{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-height:40px;width:100%}
+.check{display:flex;gap:8px;align-items:flex-start;margin:4px 0 14px;font-size:13px}
+.check input{margin-top:3px}
+.err{background:#FFE9EF;border:1px solid var(--pink);color:#7A0A2B;border-radius:10px;padding:10px 12px;margin-bottom:14px;white-space:pre-line}
+.note{background:var(--bg);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--muted);margin-top:16px}
+.loginBtns{display:flex;gap:10px;flex-wrap:wrap}
+.loginFoot{margin-top:16px;font-size:12px;color:var(--muted)}
+.progress{background:var(--white);border-bottom:1px solid var(--line);padding:10px 20px}
+.bar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden;margin-top:6px}
+.bar>i{display:block;height:100%;width:0;background:var(--blue);border-radius:99px;transition:width .2s}
+.progress .row{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+main{padding:16px 20px 60px;max-width:1800px;margin:0 auto}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:12px}
+.toolbar label{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.toolbar input,.toolbar select{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:7px 10px;min-height:38px;text-transform:none;letter-spacing:0;font-weight:400;color:var(--ink)}
+.toolbar input[type=search]{min-width:200px}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.meta{font-size:12px;color:var(--muted);margin:2px 0 12px}
+.warn{background:#FFFBE0;border:1px solid var(--yellow);border-radius:10px;padding:8px 12px;margin-bottom:10px;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:10px}
+.stat{text-align:left;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.stat span{display:block;color:var(--muted);font-size:12px}
+.stat b{display:block;font-size:26px;margin-top:2px;font-variant-numeric:tabular-nums;color:var(--blue)}
+.stat.active{background:var(--blue);border-color:var(--blue)}
+.stat.active span,.stat.active b{color:#fff}
+.balance{font-size:13px;color:var(--muted);margin:0 0 14px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;margin-bottom:14px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:12px;height:12px;border-radius:3px;display:inline-block}
+.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(290px,1fr);gap:12px;overflow-x:auto;padding-bottom:10px;align-items:start}
+.column{background:var(--soft);border-radius:var(--radius);padding:10px;min-width:0}
+.column h2{font-size:14px;display:flex;align-items:center;gap:8px}
+.column h2:before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c,var(--blue))}
+.column .cmeta{font-size:12px;color:var(--muted);margin:3px 0 10px}
+.empty{color:var(--muted);font-size:13px;padding:12px;text-align:center}
+.supply{background:var(--white);border:1px solid var(--line);border-left:5px solid var(--frame,var(--blue));border-radius:12px;padding:10px 12px;margin-bottom:10px}
+.supply.cancelled{opacity:.7}
+.supply header{display:flex;flex-direction:column;gap:2px;cursor:pointer}
+.supply header strong{font-size:15px}
+.supply header em{font-style:normal;color:var(--muted);font-size:12px}
+.elsewhere{font-size:12px;color:var(--muted)}
+.badge{display:inline-block;background:var(--pink);color:#fff;border-radius:6px;padding:1px 7px;font-size:11px;font-weight:600;margin:2px 4px 0 0}
+.direction{margin-top:10px;padding-top:8px;border-top:1px dashed var(--line)}
+.directionName{background:none;border:0;padding:0;display:flex;gap:8px;align-items:baseline;text-align:left;flex-wrap:wrap}
+.directionName b{font-size:14px}
+.directionName span{color:var(--muted);font-size:12px}
+.boxes{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.box{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px;width:58px;text-align:center}
+.carton{height:26px;border-radius:4px;overflow:hidden;display:flex;flex-direction:column;background:#C9D3E0}
+.band{display:block;width:100%}
+.box small{display:block;font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.box .qty{display:block;font-size:12px;font-weight:700}
+.section{margin-top:22px}
+.section h3{font-size:16px;margin-bottom:4px}
+.tableWrap{overflow-x:auto;background:var(--white);border:1px solid var(--line);border-radius:var(--radius)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{background:var(--bg);text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:8px 10px;white-space:nowrap}
+td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+tr.clickable{cursor:pointer}
+tr.sub td{background:#F8FAFC;color:var(--muted)}
+tr.sub td:first-child{padding-left:30px}
+tr.subhead td{background:#EEF3FB;color:var(--ink);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.chip{display:inline-block;border-radius:6px;padding:1px 8px;font-size:11px;font-weight:600;background:var(--soft);color:var(--ink);white-space:nowrap}
+.chip.pink{background:var(--pink);color:#fff}
+.chip.green{background:var(--green);color:var(--ink)}
+.chip.blue{background:var(--blue);color:#fff}
+.chip.yellow{background:var(--yellow);color:var(--ink)}
+.chip.night{background:var(--night);color:#fff}
+.twisty{background:none;border:0;padding:0 6px 0 0;color:var(--blue);font-weight:700;width:18px}
+.tiles{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.tiles4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tiles5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.note{background:#EEF3FB;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:13px;margin:0 0 12px}
+tr.sub2 td{background:#F1F5FB;color:var(--muted)}
+tr.sub2 td:first-child{padding-left:52px}
+tr.risk-high td:first-child{box-shadow:inset 4px 0 0 var(--pink)}
+tr.risk-mid td:first-child{box-shadow:inset 4px 0 0 #FF9F1C}
+.tile{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.tile span{display:block;color:var(--muted);font-size:12px}
+.lt{display:flex;align-items:center;gap:0}
+.ib{display:inline-flex;align-items:center;justify-content:center;position:relative;width:14px;height:14px;margin-left:5px;padding:0;border:1px solid currentColor;border-radius:50%;background:transparent;color:var(--muted);font:700 9px/1 Georgia,"Times New Roman",serif;font-style:italic;text-transform:none;letter-spacing:0;vertical-align:middle;cursor:help;opacity:.75;flex:none}
+.ib::before{content:"i"}
+.ib::after{content:"";position:absolute;inset:-8px}
+.ib:hover,.ib:focus-visible{color:var(--blue);opacity:1;outline:0}
+.chip.res{background:var(--night);color:#fff;cursor:help;margin-left:2px}
+.chip.res:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+#tipPop{position:fixed;z-index:9999;max-width:min(320px,calc(100vw - 16px));background:var(--night);color:#fff;border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.45;font-weight:400;text-transform:none;letter-spacing:0;white-space:pre-line;box-shadow:0 8px 24px rgba(9,0,137,.25);pointer-events:none}
+#tipPop[hidden]{display:none}
+.tile b{display:block;font-size:24px;margin-top:2px;font-variant-numeric:tabular-nums}
+.clusterBars{display:grid;gap:6px;margin-bottom:16px}
+.cbar{display:grid;grid-template-columns:minmax(120px,220px) 1fr 230px;gap:10px;align-items:center;font-size:13px}
+.cbar .track{height:14px;background:var(--soft);border-radius:99px;overflow:hidden;display:flex}
+.cbar .track i{display:block;height:100%}
+.cbar .vals{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.cbarLegend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin:0 0 8px}
+#scrim{position:fixed;inset:0;background:rgba(9,0,137,.35);z-index:40}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(460px,100%);background:var(--white);z-index:50;overflow-y:auto;padding:18px 20px 30px;border-left:1px solid var(--line)}
+#drawer h3{font-size:20px;margin:10px 0 2px}
+#drawer .kv{display:grid;grid-template-columns:120px 1fr;gap:4px 10px;font-size:13px;margin:10px 0}
+#drawer .kv dt{color:var(--muted)}
+#drawer .kv dd{margin:0}
+.timeline{list-style:none;padding:0;margin:12px 0;border-left:2px solid var(--blue)}
+.timeline li{padding:0 0 10px 14px;position:relative;font-size:13px}
+.timeline li:before{content:"";position:absolute;left:-6px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--blue)}
+.drawerBox{background:var(--bg);border-radius:10px;padding:10px 12px;margin:10px 0;font-size:13px}
+@media (max-width:1100px){
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tiles,.tiles4,.tiles5{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .top{padding:12px 14px 0}
+  main{padding:12px 12px 50px}
+  .board{grid-auto-flow:row;grid-auto-columns:unset;overflow:visible}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat b{font-size:22px}
+  .tiles,.tiles4,.tiles5{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .toolbar label{flex:1 1 140px}
+  .toolbar input[type=search]{min-width:0;width:100%}
+  .tab{padding:9px 14px}
+  .cbar{grid-template-columns:1fr auto;grid-template-areas:"n v" "t t";row-gap:4px;font-size:12px}
+  .cbar>span:first-child{grid-area:n;min-width:0;overflow-wrap:anywhere}
+  .cbar .track{grid-area:t}
+  .cbar .vals{grid-area:v}
+  .cbarLegend{flex-wrap:wrap;gap:4px 14px}
+  #drawer{top:auto;height:88vh;width:100%;border-radius:18px 18px 0 0;border-left:0;border-top:1px solid var(--line)}
+  .loginHead,.loginCard{padding-left:18px;padding-right:18px}
+  .progress{padding:10px 14px}
+}
+@media (prefers-reduced-motion:reduce){.bar>i{transition:none}}
+/* author-block.css — «блок автора»: бейдж, подвал, попап. Префикс .ab-, ничего не трогает на странице.
+   Цвета меняются переменными --ab-* (JS ставит их из config.colors на .ab-root). Без hover-свечения. */
+.ab-root{
+  --ab-accent:#F91155;        /* главная кнопка попапа */
+  --ab-accent-text:#fff;
+  --ab-link:#005BFF;          /* ссылки */
+  --ab-head-from:#090089;     /* шапка попапа: градиент 45° */
+  --ab-head-to:#005BFF;
+  --ab-head-text:#fff;
+  --ab-surface:#fff;          /* фон бейджа и попапа */
+  --ab-ink:#0B1033;
+  --ab-muted:#5B6482;
+  --ab-line:#D5DEE9;
+  --ab-overlay:rgba(9,0,137,.45);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:14px;line-height:1.4;color:var(--ab-ink);
+}
+.ab-root *,.ab-root *::before,.ab-root *::after{box-sizing:border-box}
+.ab-root a{color:var(--ab-link)}
+.ab-root [hidden]{display:none!important}
+
+/* --- бейдж справа внизу --- */
+.ab-badge{position:fixed;right:14px;bottom:14px;z-index:30;display:flex;align-items:center;gap:8px;
+  background:var(--ab-surface);color:var(--ab-ink);text-decoration:none;
+  border:1px solid var(--ab-line);border-radius:999px;padding:4px 14px 4px 4px;font-size:13px;font-weight:600;
+  box-shadow:0 2px 8px rgba(11,16,51,.14)}
+.ab-badge:hover{text-decoration:underline}
+.ab-badge:focus-visible,.ab-btn:focus-visible,.ab-x:focus-visible,.ab-root a:focus-visible{outline:2px solid var(--ab-link);outline-offset:2px}
+.ab-badge img{width:34px;height:34px;border-radius:50%;object-fit:cover;display:block;flex:none;background:var(--ab-line)}
+.ab-badge span{white-space:nowrap;color:var(--ab-ink)}
+.ab-badge b{font-weight:700}
+
+/* --- подвал --- */
+.ab-footer{display:block;max-width:960px;margin:28px auto 0;padding:18px 16px 76px;border-top:1px solid var(--ab-line);
+  color:var(--ab-muted);font-size:13px;line-height:1.5;text-align:center}
+.ab-footer p{margin:0 0 4px}
+.ab-footer .ab-sub{font-size:12px}
+.ab-footer .ab-disclaimer{margin-top:10px;font-size:11px;line-height:1.4;color:var(--ab-muted);opacity:.8}
+
+/* --- попап --- */
+.ab-overlay{position:fixed;inset:0;z-index:1000;background:var(--ab-overlay);display:flex;align-items:center;justify-content:center;padding:16px}
+.ab-modal{position:relative;width:min(440px,100%);max-height:calc(100vh - 32px);overflow-y:auto;background:var(--ab-surface);
+  border-radius:16px;box-shadow:0 12px 40px rgba(9,0,137,.3)}
+.ab-head{background:linear-gradient(45deg,var(--ab-head-from) 70%,var(--ab-head-to));color:var(--ab-head-text);
+  border-radius:16px 16px 0 0;padding:22px 24px 18px;display:flex;gap:14px;align-items:center}
+.ab-head img{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.85);flex:none;background:var(--ab-line)}
+.ab-head h2{margin:0;font-size:19px;line-height:1.25;color:inherit;padding-right:22px}
+.ab-body{padding:18px 24px 22px}
+.ab-body p{margin:0 0 16px;color:var(--ab-ink);font-size:14.5px;line-height:1.5}
+.ab-btn{display:block;width:100%;text-align:center;text-decoration:none;font:inherit;font-weight:700;font-size:15px;
+  background:var(--ab-accent);color:var(--ab-accent-text)!important;border:0;border-radius:12px;padding:12px 16px;cursor:pointer}
+.ab-btn:hover{filter:none;text-decoration:underline}
+.ab-alt{display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--ab-link)}
+.ab-x{position:absolute;top:10px;right:10px;width:34px;height:34px;border:0;border-radius:50%;background:transparent;color:var(--ab-head-text);
+  font-size:24px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+
+/* --- мобильная версия: бейдж — только аватар, чтобы не закрывать контент и кнопки --- */
+@media (max-width:640px){
+  .ab-badge{right:10px;bottom:10px;padding:3px;gap:0}
+  .ab-badge span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .ab-badge img{width:36px;height:36px}
+  .ab-footer{padding:16px 14px 64px;font-size:12px;text-align:left}
+  .ab-head{padding:18px 18px 14px}
+  .ab-body{padding:16px 18px 20px}
+  .ab-head h2{font-size:17px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .ab-overlay{animation:ab-fade .18s ease-out}
+  @keyframes ab-fade{from{opacity:0}to{opacity:1}}
+}
+
+</style>
+</head>
+<body>
+
+<section id="login" class="loginWrap" hidden>
+  <div class="loginHead">
+    <h1>Поставки и остатки Ozon</h1>
+    <p>Где сейчас ваши товары: на отгрузке, в пути, на приёмке или уже на складе. Неофициальный инструмент для продавцов Ozon.</p>
+  </div>
+  <form id="loginForm" class="card loginCard" autocomplete="off">
+    <div id="loginErr" class="err" hidden></div>
+    <label class="field"><span>CLIENT-ID</span>
+      <input id="inId" class="in" type="text" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="например, 123456"></label>
+    <label class="field"><span>API-KEY</span>
+      <input id="inKey" class="in" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></label>
+    <label class="field"><span>ЗАГРУЗИТЬ ПОСТАВКИ ЗА</span>
+      <select id="inDays" class="in">
+        <option value="14">14 дней</option>
+        <option value="30" selected>30 дней</option>
+        <option value="60">60 дней</option>
+        <option value="90">90 дней</option>
+        <option value="180">180 дней</option>
+        <option value="365">365 дней</option>
+      </select></label>
+    <label class="check"><input id="inRemember" type="checkbox"><span>Запомнить ключ в этом браузере (localStorage). Без галочки ключ живёт только до закрытия вкладки.</span></label>
+    <div class="loginBtns">
+      <button class="btn primary" type="submit">Войти и загрузить</button>
+      <button class="btn ghost" type="button" id="btnDemo">Демо-режим</button>
+    </div>
+    <div class="note">Ключ уходит только на <b>api-seller.ozon.ru</b> — прямо из вашего браузера. У страницы нет сервера и она больше никуда ничего не отправляет: это закреплено политикой безопасности в самом файле. Создайте ключ с правами <b>только на чтение</b>, например роль «Admin read only». Подробности — в README.</div>
+    <div class="loginFoot">Неофициальный инструмент, не связан с Ozon. Название Ozon принадлежит его владельцу.</div>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header class="top">
+    <div class="topRow">
+      <h1>Поставки и остатки Ozon</h1>
+      <span class="badge-unofficial">неофициальный инструмент</span>
+      <span id="demoTag" class="demoTag" hidden>демо-данные</span>
+      <span class="spacer"></span>
+      <button class="btn onDark" id="btnReload" type="button">Обновить</button>
+      <button class="btn onDark" id="btnLogout" type="button">Выйти и стереть ключ</button>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" role="tab" data-tab="supplies" type="button">Поставки</button>
+      <button class="tab" role="tab" data-tab="stocks" type="button">Остатки</button>
+      <button class="tab" role="tab" data-tab="cities" type="button">По городам</button>
+      <button class="tab" role="tab" data-tab="planner" type="button">Планер поставок</button>
+    </nav>
+  </header>
+  <div id="progress" class="progress" hidden>
+    <div class="row"><span id="progText">Загрузка…</span><span><span id="progPct">0%</span> <button id="btnCancel" class="pill" type="button">Отменить</button></span></div>
+    <div class="bar"><i id="progBar"></i></div>
+  </div>
+  <main>
+    <div id="appErr" class="err" hidden></div>
+    <div id="appWarn" class="warn" hidden></div>
+    <section id="tab-supplies">
+      <div class="toolbar">
+        <label>С<input type="date" id="from"></label>
+        <label>По<input type="date" id="to"></label>
+        <div class="presets" id="presets">
+          <button class="pill" data-preset="7" type="button">7 дней</button>
+          <button class="pill" data-preset="30" type="button">30 дней</button>
+          <button class="pill" data-preset="month" type="button">Месяц</button>
+          <button class="pill" data-preset="all" type="button">Всё</button>
+        </div>
+        <label><span class="lt">Точка сдачи<button type="button" class="ib" data-tipkey="dropoff" aria-label="Подсказка"></button></span><select id="dropoff"></select></label>
+        <label><span class="lt">Кластер<button type="button" class="ib" data-tipkey="clusterFilter" aria-label="Подсказка"></button></span><select id="cluster"></select></label>
+        <label>Поиск<input type="search" id="q" placeholder="заявка, артикул, товар"></label>
+        <label><span class="lt">Загружать за<button type="button" class="ib" data-tipkey="loadDays" aria-label="Подсказка"></button></span><select id="days">
+          <option value="14">14 дней</option><option value="30">30 дней</option><option value="60">60 дней</option>
+          <option value="90">90 дней</option><option value="180">180 дней</option><option value="365">365 дней</option></select></label>
+      </div>
+      <div class="meta" id="generated"></div>
+      <div class="stats" id="stats"></div>
+      <p class="balance" id="balance"></p>
+      <div class="legend" id="legend"></div>
+      <div class="board" id="board"></div>
+      <div class="section">
+        <h3>Возвраты с поставок</h3>
+        <p class="muted" id="returnNote" style="margin:0 0 8px"></p>
+        <div id="returns"></div>
+      </div>
+    </section>
+    <section id="tab-stocks" hidden>
+      <div class="toolbar">
+        <label><span class="lt">Кластер<button type="button" class="ib" data-tipkey="cluster" aria-label="Подсказка"></button></span><select id="sCluster"></select></label>
+        <label><span class="lt">Оборачиваемость<button type="button" class="ib" data-tipkey="grade" aria-label="Подсказка"></button></span><select id="sGrade"></select></label>
+        <label>Поиск<input type="search" id="sQ" placeholder="артикул или название"></label>
+        <label style="flex-direction:row;align-items:center;gap:6px;text-transform:none;font-size:13px;color:var(--ink)"><input type="checkbox" id="sNonZero" checked>только с остатком или движением</label>
+        <button class="btn ghost" id="btnCsv" type="button">Скачать CSV</button>
+      </div>
+      <div class="meta" id="sMeta"></div>
+      <div class="tiles" id="tiles"></div>
+      <h3 style="margin-bottom:6px">По кластерам</h3>
+      <div class="cbarLegend"><span><i class="swatch" style="background:var(--blue)"></i> доступно<button type="button" class="ib" data-tipkey="avail" aria-label="Подсказка"></button></span><span><i class="swatch" style="background:var(--sky)"></i> в пути на склад<button type="button" class="ib" data-tipkey="transit" aria-label="Подсказка"></button></span></div>
+      <div class="clusterBars" id="clusterBars"></div>
+      <h3 style="margin-bottom:6px">По товарам</h3>
+      <div class="tableWrap"><table id="stockTable"></table></div>
+    </section>
+    <section id="tab-cities" hidden>
+      <div class="toolbar">
+        <label>Склейка<select id="cGroup"></select></label>
+        <label>Поиск<input type="search" id="cQ" placeholder="город, склад, артикул, название"></label>
+        <label style="flex-direction:row;align-items:center;gap:6px;text-transform:none;font-size:13px;color:var(--ink)"><input type="checkbox" id="cNonZero" checked>только с остатком или движением</label>
+        <button class="btn ghost" id="btnCitiesCsv" type="button">Скачать CSV</button>
+      </div>
+      <div class="meta" id="cMeta"></div>
+      <div class="tiles tiles4" id="cTiles"></div>
+      <h3 style="margin-bottom:6px">Где сколько товара</h3>
+      <div class="cbarLegend"><span><i class="swatch" style="background:var(--blue)"></i> доступно<button type="button" class="ib" data-tipkey="avail" aria-label="Подсказка"></button></span><span><i class="swatch" style="background:var(--sky)"></i> в пути на склад<button type="button" class="ib" data-tipkey="transit" aria-label="Подсказка"></button></span><span><span class="chip res" data-tipkey="reserve" tabindex="0">Резерв</span> — зарезервировано под заказы покупателей, ещё не отгружено (в длину полосы не входит)</span></div>
+      <div class="clusterBars" id="cBars"></div>
+      <h3 style="margin-bottom:6px">По городам <button type="button" class="ib" data-tipkey="cityHow" aria-label="Подсказка"></button> <span class="muted" style="font-weight:400;font-size:12px">· город берётся из названия кластера Ozon, а если его нет — из названия склада; неизвестное попадает в «Прочее»</span></h3>
+      <div class="tableWrap"><table id="cityTable"></table></div>
+    </section>
+    <section id="tab-planner" hidden>
+      <div class="toolbar">
+        <label><span class="lt">Хватить на, дней<button type="button" class="ib" data-tipkey="horizon" aria-label="Подсказка"></button></span><input type="number" id="pN" value="30" min="1" max="365" step="1" style="width:90px"></label>
+        <label><span class="lt">Запас, %<button type="button" class="ib" data-tipkey="reservePct" aria-label="Подсказка"></button></span><input type="number" id="pZ" value="20" min="0" max="300" step="5" style="width:80px"></label>
+        <label><span class="lt">Скорость продаж<button type="button" class="ib" data-tipkey="srcSpeed" aria-label="Подсказка"></button></span><select id="pSrc">
+          <option value="ozon">по данным Ozon (≈28 дн., сразу)</option>
+          <option value="30">за 30 дней по отправлениям</option>
+          <option value="60">за 60 дней по отправлениям</option></select></label>
+        <label><span class="lt">Кратность упаковки, шт<button type="button" class="ib" data-tipkey="pack" aria-label="Подсказка"></button></span><input type="number" id="pK" value="1" min="1" max="1000" step="1" style="width:90px"></label>
+        <label><span class="lt">Кластер<button type="button" class="ib" data-tipkey="cluster" aria-label="Подсказка"></button></span><select id="pCluster"></select></label>
+        <label>Склейка<select id="pGroup"></select></label>
+        <label style="flex-direction:row;align-items:center;gap:6px;text-transform:none;font-size:13px;color:var(--ink)"><input type="checkbox" id="pOnly" checked>только где нужна отправка или есть риск<button type="button" class="ib" data-tipkey="onlyNeed" aria-label="Подсказка"></button></label>
+        <button class="btn ghost" id="btnPlanXlsx" type="button">Скачать Excel (.xlsx)</button>
+        <label style="flex-direction:row;align-items:center;gap:6px;text-transform:none;font-size:13px;color:var(--ink)"><input type="checkbox" id="pOzon">Для загрузки в Ozon по городам<button type="button" class="ib" data-tipkey="ozonFiles" aria-label="Подсказка"></button></label>
+        <button class="btn ghost" id="btnPlanCsv" type="button">Скачать CSV</button>
+      </div>
+      <div class="meta" id="pOzonHint" hidden>Будет один zip: по файлу на каждый кластер в формате шаблона Ozon «артикул / имя (необязательно) / количество», колонка имени пустая (только строки с количеством больше 0) и сводный отчёт. Это файлы для вашей загрузки: проверяйте их перед загрузкой в Ozon, инструмент сам ничего в Ozon не отправляет.</div>
+      <div class="meta" id="pOzonMsg" role="status" style="color:var(--pink)"></div>
+      <div class="meta" id="pMeta"></div>
+      <div class="note" id="pNote">План строится <b>по кластерам</b>, а не по складам: склад внутри кластера Ozon назначает сам при выборе таймслота поставки. Формула: к отправке = max(0, округлить вверх(продажи в день × дней × (1 + запас)) − остаток − в пути), затем округление вверх до кратности упаковки. Значок <span class="ib" aria-hidden="true"></span> рядом с названием поля объясняет, что оно значит.</div>
+      <div class="tiles tiles5" id="pTiles"></div>
+      <h3 style="margin-bottom:6px">Итоги по кластерам</h3>
+      <div class="tableWrap"><table id="planClusters"></table></div>
+      <h3 style="margin:16px 0 6px">Склейка → размер (SKU) → кластер</h3>
+      <div class="tableWrap"><table id="planTable"></table></div>
+    </section>
+  </main>
+</div>
+
+<div id="scrim" hidden></div>
+<aside id="drawer" hidden aria-label="Карточка поставки"></aside>
+
+<script>
+/*!
+ * author-block.js — переиспользуемый «блок автора» для одностраничных инструментов.
+ * Бейдж справа внизу + подвал + попап (один раз, после первой успешной загрузки данных).
+ * Без зависимостей и без сети: аватар встроен (base64 webp). Тексты вставляются через textContent.
+ * Нужен CSS из author-block.css (в одно-файловом инструменте вставляется в <style>).
+ * Использование:  AuthorBlock.init({ toolId: "ozon-stock", colors: {...}, links: {...}, texts: {...} });
+ *                 AuthorBlock.onSuccess();   // вызвать после первой успешной загрузки данных (в т.ч. демо)
+ */
+(function (root) {
+  "use strict";
+  var AVATAR = "data:image/webp;base64,UklGRooKAABXRUJQVlA4IH4KAABwKACdASpgAGAAPmEmj0YkIaEhLVRNsIAMCUAXOXTKSpSt27jUhOGNuH2YY8FvwH44+a/jN+ASgrhfsbjy5X/FvUR9pf6vxMdx2AL679+zqoeGPNd9O/CHoC/pj1Z/8ryhfXvsIDLOWKhByjbanapWYMJYqnakAQhzcei1m/1p7JpbfS5ttUy17VxOu/L5MnmbMc37r6YVHfMeKl8Ir6vRYinbkjezIofNF3iUnHVY9tN5UyB+CbL9KfkdfRMaM1cWQlBkbYfo9tu8doPLVVVIB0rCesyvlkGWA61id2N9YVy2bRtmCQUt3o46wOeBgAwvOlqguVaPaT9YE+BiWuMOnUUtH42upuLLPlC7vdVEoCCq12CYXksh1clFS3IFvpinBonzFKw5VxsuMCHhCmahFJvY+Ipygllula5TA2RZxd1WQu5upbZ8m+GGAADKdM4VNGk12dn43Ug/9LRv87jhSDFU0wbEcntgN1oVz/kfykyvSl4eEnS66Sz7XE85J8oC5Jkq2YRIDFIyZ/GqkdaJEW+YoN5Bg0VU9X/8JRzY/ec4MMvdWSQ1NfsJ3VHFC1YHarozXZINzeuqlCckjssBgK0wk7aeXvQ21zwsWyQSkJpBsyxhq65qIgt4F1ll+6bifkzLPV+M/E1G6fwSmQjWU4fxY5DHQwKnZlUsIiiEngxpicCri446Uf1rS1F+1fJq0K7ivu80Zo1K7A6uV72j+PlX3cNUKfRkql3aYpRme8TlYDNr2mHSI918Lh6o0Wq0ORr4EO6Ckc9R6WvzSJUf/+MQmIo38M69wKcwNlcp2dsJCg4r0P7/b/fHGMtuvXkq9cFfk2b+YeDXX91to6cUtQrwnKOayI4jH6XCUhEhd91yEWAHS5bZRWQ6QN2dKXHodL0jNwzyNSzOkyFHDdgJv2c+Y+cePXMiLqLbb2nQYvU6LpwcrhLf9+Z6egMiixAuYGYn7GGggtBteERcPKlTSipct8RwWK1Nm9E86O1Pq7xolnZHKmhBHZR1SFWAFpLzqnOTGZ8wta23DRf9rXUwqu9lmzAOODe35pi+fIfC+zF7l5xlsHg0Va39XRy3T7Kn0ZuZdv/5dcXmqe+ofIxZDP7ZPpaHYTx5ywm2bZjFyU2NpX/4J07ex/PUIcef0KaRLYFz5ZwNbCmXFB7VK+jnnCM7lnv4o/rSETcVoHKBCLfHWRH0PVP+2V6VMCQNrcNnkAiBfYWE6KXl+kVlkFyktYWnBK2E5mN+fRX1YZl98RqB+9PmJq89bIm0Aijrw10pH3uyQT6AKeh6MPS8fsF21pbF7rHlQKePtvVJjgjXj87gyChQQEgJBwzd4E0WijwRYtVVR/olEIiQPjME+iWoiAUzVlKQofik19Q1zyXko9g3uzlV2s6Z2sMmPugaYXIzDw2oek9ILCdhWUtF0mlXh+Lxy147cyPuavxI+0GxkEvdehRLEg446/OP3mUFytqEDF/YeJC/h2eHoa8iN7EtIvbzNPjT/8H5XecqyO5XVB1jLtOs8XKrc7Z7+DnvlA4ibdscOG0lcPYEFrMYi74r4qC8xvHtDSyUc+6TSpQqBYer70l7XSJu5QI6sz4MjcqO7W2atK6uoqjY8CJX29+RHYF/sNmJcWnYa4oDZa08cHQHA838TlxByqHSObp6Z6yw4n4x0XCD7wacPxrFWLdSSeYzNg0ZYYil1nQpcP+4E0+tEFcWZC8FpZzoQv8hpai2W56cPb+VO+Va+4LBRI1piIqEu8FpULk5Xb7zxcH8a6+GFbt9z07dhfbD4LmgLzt7Bh6D4BAx4XE5Ye0URn1g9HH3QeLVrDuotG8q+QgkHyM23y+y3oBu3nSMNTEHyyt9EZPPryBTuWJWCsFOP6DN9G20vYnktCUc8rwg9UV9v7+R/4/ld8n5nE3M/x1bv46kPpqz1q0fqORkPCXWUznC6Hu/4AduIjGGV6q+vdievwwwx6kU0r1nOOFEdBFg4tIgwKQIUr115KjcMPpBeeMahhHwrzZj++haJJCaBiP5yGEjRC2DMrIO8Y8d3c3TQ+V4vaX05wfAjQ3tasUxqOOK+koHAUNaVcKPqCobBYDkPVclesOLwunTR2xUvu8elVBOSRfsmgm3yalS1BqRZ+iCBuXW+p8RNQL36KQdBtnATIaYnubIJUsE0K/+/sa//72czCaFPlyhppreS2GXq5DWCdIlzKYwCP3sXrYS7+rO9ktwh3np87mGVzr2Mj7oTCKsl6wa872nr5/ttk+HRd+jAGrxuG7dpENBU+O+j/UUAd6JnoXavV0Xb1WlDgoMzhXxwqbyoD4Cho9TrxI/HNdt/6p+4DnqVPYw9i0q7+KgnTaMfxXMNnAF40EAUQDCVsViF0C+u4RiJGzJEYM/sAZhKvgzmWxQWLcoWyV3KDswumyGADuCQivTZOVLsQNn75890j2NsABhwtQEfxCPZl9Ws68xQZURhQ8q8MXztQtASYUP3T4fL2wh8bi7virLzb42drar6dUEwNo3pSKsZhaS9861QNxdCjqhJqP5xBB10zTQqBOuuSb34gpY/sVI2zC8e5RKEhlls+jdq7gVK86i3jRX+XBeb4aS0YsuIH2XLeR6KYE/9oj4i3xUA2mtG9w0ePV5Grxn/+W9pHRPMKj8ONtx4DPRmKwd9peJJq4/HUTKy1vm/QmW/XLd7jW91/ef/wcjjt1PhwLBDy48bAORs4vnpZF7kYu6HGtZ/4EzkcwbSfdVskqKYRy9ck97cZkmX39WtsszXfyttHiB9Kt2MsClMSsfaQXrPtC+ciLTTkOSnSY+zwC6rudRf2n490RqUZK+uQ3fAeh2UhJO74u+KPZJm6Q5+Cn+JzaM9Y4P4gjXpQaXzlO/BElTI9bl9V/UBHGA6oo8la880dEzwo+uvqZITSTmYhMeNcDCtUmcsbVHpJF70eiAMANf20o66MgLj7+Yzcm/Oa3x3gRj1r6pRWgTj4qS31N+N8J3uuY4XWXXn82R9JxLf/H7ggxXk3J+Sgz/FSGeIXqLtMZ3tH1RC9dfWvzqKw6qlVuliFZvehv/f9M71j2Eow0Yma2l6G6L9UhDSAf8IvP61P+D0WreHMSdadi9OheHQN5Mk5/CD6xJkaQwZJOubDeqKzuFwqiASa5nGHAeK/Dl0iVedaXUv9jqmd5hOiwdrJUHRj/F49d33ck3dQkLazxGiSjsBBVHIg4nNZbpAVtL3OXLS3dMU0Fui4R9os1F0FkiYQpU6pTFvTADdduEDoJm6cBAAZ/4+lbp64jfBoPmdMr4qiwun+u36kd+GDZDqkkLlAPVqLNRZnjfrKVRa2/TSwamUTFyfHmixOyj/VLw33drZcVVu2TrSLma6CFHRQLs1EQHE3cNZxLLN+uxneK8njRbhDvjk/dj3ltn+rdlmSOTggBjTrE+JwLAW1s6FK0DD+Qxkg3TuT0k0LNhnc3sPPmdb/nb2wjzhf/Nm5epiMB9Ut/jBf8RV/6HijtOYIDgJFL5lhNUiwfcdyAlJP0D+438RH6lPnuWd9h431x6zRcMSQnUcJ8dJmkbDRzhcP7HobqegdoEf1t53D4iEQIZZAAA";
+
+  var DEFAULTS = {
+    toolId: "tool",                 // имя инструмента: ключ флага попапа и utm_campaign по умолчанию
+    campaign: null,                 // utm_campaign (если null — берётся из toolId)
+    avatar: AVATAR,                 // data: URI или URL; по умолчанию встроенный 96px
+    author: { name: "Евгений Зямзин" },
+    links: {
+      telegram: "https://t.me/evgenyzyamzin",
+      site: "https://zyamzin.ru/",                // utm добавляются автоматически (см. utm)
+      utm: { source: "tool" },                    // utm_medium = badge | footer | popup подставляется само
+      // Задел на будущее — пока НЕ используется, ссылки только хранятся в конфиге:
+      telegramBot: null,                          // напр. "https://t.me/<bot>?start=<toolId>"
+      bonus: null                                 // описание/ссылка на бонус за переход
+    },
+    texts: {
+      badge: "Сделал",                            // «Сделал <b>Евгений Зямзин</b>»
+      badgeLabel: "Автор инструмента — Евгений Зямзин. Открыть сайт",
+      footer: "Бесплатный инструмент от Евгения Зямзина. Оптимизирую онлайн-бизнес: где теряются деньги и заказы.",
+      footerTelegram: "Больше инструментов — в Telegram",
+      footerSite: "zyamzin.ru",
+      disclaimer: "Инструмент бесплатный и распространяется как есть. Используйте на своё усмотрение и сверяйте данные с личным кабинетом Ozon. Автор не несёт ответственности за точность расчётов.", // мелкий текст в подвале; "" — не показывать; переопределяется под инструмент
+      popupTitle: "Видите теперь, где ваш товар?",
+      popupBody: "Я делаю такие инструменты для селлеров и интернет-магазинов: нахожу, где бизнес теряет деньги и заказы, и как это исправить. Новые инструменты и разборы — в моём Telegram-канале",
+      popupButton: "Перейти в Telegram-канал",
+      popupAlt: "Обо мне — zyamzin.ru",
+      close: "Закрыть"
+    },
+    colors: {},                     // переопределения --ab-*: accent, accentText, link, headFrom, headTo, headText, surface, ink, muted, line, overlay
+    popup: { enabled: true, delayMs: 700 },
+    footer: { enabled: true, mount: null },       // mount: CSS-селектор/элемент; по умолчанию — конец <body>
+    badge: { enabled: true }
+  };
+  var COLOR_VARS = { accent: "--ab-accent", accentText: "--ab-accent-text", link: "--ab-link", headFrom: "--ab-head-from",
+    headTo: "--ab-head-to", headText: "--ab-head-text", surface: "--ab-surface", ink: "--ab-ink", muted: "--ab-muted",
+    line: "--ab-line", overlay: "--ab-overlay" };
+
+  var cfg = null, rootEl = null, scheduled = false, lastFocus = null;
+
+  function merge(a, b) {
+    var o = {}, k;
+    for (k in a) o[k] = a[k];
+    for (k in (b || {})) {
+      if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") o[k] = merge(a[k], b[k]);
+      else o[k] = b[k];
+    }
+    return o;
+  }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function withUtm(medium) {
+    var u = cfg.links.utm || {}, base = cfg.links.site, p = [];
+    p.push("utm_source=" + encodeURIComponent(u.source || "tool"));
+    p.push("utm_medium=" + encodeURIComponent(medium));
+    p.push("utm_campaign=" + encodeURIComponent(cfg.campaign || cfg.toolId));
+    return base + (base.indexOf("?") < 0 ? "?" : "&") + p.join("&");
+  }
+  function ext(a, href) { a.href = href; a.target = "_blank"; a.rel = "noopener noreferrer"; return a; }
+  function flagKey() { return "authorBlock:" + cfg.toolId + ":popupSeen"; }
+  function seen() { try { return localStorage.getItem(flagKey()) === "1"; } catch (e) { return false; } }
+  function mark() { try { localStorage.setItem(flagKey(), "1"); } catch (e) {} }
+
+  function buildBadge() {
+    var a = ext(el("a", "ab-badge"), withUtm("badge"));
+    a.setAttribute("aria-label", cfg.texts.badgeLabel);
+    var img = el("img"); img.src = cfg.avatar; img.alt = ""; img.width = 34; img.height = 34;
+    var s = el("span", null, cfg.texts.badge + " ");
+    s.appendChild(el("b", null, cfg.author.name));
+    a.appendChild(img); a.appendChild(s);
+    rootEl.appendChild(a);
+  }
+  function buildFooter() {
+    var f = el("footer", "ab-footer ab-root"); applyColors(f);
+    var p = el("p", null, cfg.texts.footer + " ");
+    p.appendChild(ext(el("a", null, cfg.texts.footerTelegram), cfg.links.telegram));
+    p.appendChild(document.createTextNode(". "));
+    var q = el("p", "ab-sub");
+    q.appendChild(ext(el("a", null, cfg.texts.footerSite), withUtm("footer")));
+    f.appendChild(p); f.appendChild(q);
+    if (cfg.texts.disclaimer) f.appendChild(el("p", "ab-disclaimer", cfg.texts.disclaimer));
+    var m = cfg.footer.mount;
+    var host = typeof m === "string" ? document.querySelector(m) : (m || document.body);
+    host.appendChild(f);
+  }
+  function applyColors(node) {
+    for (var k in cfg.colors) if (COLOR_VARS[k] && cfg.colors[k]) node.style.setProperty(COLOR_VARS[k], cfg.colors[k]);
+  }
+
+  function closePopup() {
+    var o = document.getElementById("ab-popup");
+    if (!o) return;
+    o.parentNode.removeChild(o);
+    document.removeEventListener("keydown", onKey, true);
+    if (lastFocus && lastFocus.focus) try { lastFocus.focus(); } catch (e) {}
+  }
+  function onKey(e) {
+    if (e.key === "Escape") { e.stopPropagation(); closePopup(); return; }
+    if (e.key === "Tab") {   // фокус не уходит за попап
+      var items = document.querySelectorAll("#ab-popup button, #ab-popup a");
+      if (!items.length) return;
+      var first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  }
+  function showPopup() {
+    if (document.getElementById("ab-popup")) return;
+    mark();
+    lastFocus = document.activeElement;
+    var ov = el("div", "ab-overlay ab-root"); ov.id = "ab-popup"; applyColors(ov);
+    var m = el("div", "ab-modal"); m.setAttribute("role", "dialog"); m.setAttribute("aria-modal", "true"); m.setAttribute("aria-labelledby", "ab-title");
+    var head = el("div", "ab-head");
+    var img = el("img"); img.src = cfg.avatar; img.alt = ""; img.width = 56; img.height = 56;
+    var h = el("h2", null, cfg.texts.popupTitle); h.id = "ab-title";
+    head.appendChild(img); head.appendChild(h);
+    var x = el("button", "ab-x", "\u00d7"); x.type = "button"; x.setAttribute("aria-label", cfg.texts.close);
+    x.addEventListener("click", closePopup);
+    var body = el("div", "ab-body");
+    body.appendChild(el("p", null, cfg.texts.popupBody));
+    body.appendChild(ext(el("a", "ab-btn", cfg.texts.popupButton), cfg.links.telegram));
+    body.appendChild(ext(el("a", "ab-alt", cfg.texts.popupAlt), withUtm("popup")));
+    m.appendChild(head); m.appendChild(x); m.appendChild(body); ov.appendChild(m);
+    ov.addEventListener("mousedown", function (e) { if (e.target === ov) closePopup(); });
+    document.body.appendChild(ov);
+    document.addEventListener("keydown", onKey, true);
+    x.focus();
+  }
+
+  var AuthorBlock = {
+    init: function (userCfg) {
+      if (rootEl) return;
+      cfg = merge(DEFAULTS, userCfg || {});
+      rootEl = el("div", "ab-root"); applyColors(rootEl);
+      if (cfg.badge.enabled) buildBadge();
+      document.body.appendChild(rootEl);
+      if (cfg.footer.enabled) buildFooter();
+    },
+    /** Вызвать после первой успешной загрузки данных (реальной или демо). Попап покажется один раз. */
+    onSuccess: function () {
+      if (!cfg || !cfg.popup.enabled || scheduled || seen()) return;
+      scheduled = true;                     // повторные вызовы игнорируются
+      setTimeout(showPopup, cfg.popup.delayMs);
+    },
+    show: function () { if (cfg) showPopup(); },       // принудительно (для тестов/кнопки)
+    reset: function () { try { localStorage.removeItem(flagKey()); } catch (e) {} scheduled = false; },
+    config: function () { return cfg; }
+  };
+  root.AuthorBlock = AuthorBlock;
+})(typeof window !== "undefined" ? window : this);
+
+"use strict";
+/* Поставки и остатки Ozon — неофициальный инструмент.
+   Один файл, без зависимостей. Запросы идут только на api-seller.ozon.ru. */
+const API_BASE = "https://api-seller.ozon.ru";
+const $ = (id) => document.getElementById(id);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num = (v) => new Intl.NumberFormat("ru-RU").format(Math.round((Number(v) || 0) * 10) / 10);
+const MONTHS = ["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
+const ruDate = (iso) => { if (!iso) return "—"; const [y,m,d] = iso.split("-"); return `${Number(d)} ${MONTHS[Number(m)-1]} ${y}`; };
+const todayIso = () => { const n = new Date(); return new Date(n.getTime() - n.getTimezoneOffset()*60000).toISOString().slice(0,10); };
+const shiftDays = (iso, k) => { const d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + k); return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10); };
+
+/* ---------------- хранение ключа ---------------- */
+const KEY_NAME = "ozsb.creds";
+const store = {
+  read() {
+    for (const s of [sessionStorage, localStorage]) {
+      try { const raw = s.getItem(KEY_NAME); if (raw) { const o = JSON.parse(raw); if (o && o.id && o.key) return o; } } catch (e) {}
+    }
+    return null;
+  },
+  save(c, remember) {
+    try { sessionStorage.setItem(KEY_NAME, JSON.stringify(c)); } catch (e) {}
+    try { if (remember) localStorage.setItem(KEY_NAME, JSON.stringify(c)); else localStorage.removeItem(KEY_NAME); } catch (e) {}
+  },
+  wipe() {
+    try { sessionStorage.removeItem(KEY_NAME); } catch (e) {}
+    try { localStorage.removeItem(KEY_NAME); } catch (e) {}
+  }
+};
+
+/* ---------------- слой API ---------------- */
+class ApiError extends Error {
+  constructor(kind, status, message, path) { super(message); this.kind = kind; this.status = status; this.path = path; }
+}
+const S = { creds: null, demo: false, abort: null, data: null, stocks: null, loadId: 0 };
+let nextAt = 0;
+const sleep = (ms, signal) => new Promise((res, rej) => {
+  const t = setTimeout(res, ms);
+  if (signal) signal.addEventListener("abort", () => { clearTimeout(t); rej(new DOMException("Aborted", "AbortError")); }, { once: true });
+});
+async function throttle(signal) {
+  const gap = S.demo ? 0 : 200;
+  const now = Date.now();
+  const at = Math.max(now, nextAt);
+  nextAt = at + gap;
+  if (at > now) await sleep(at - now, signal);
+}
+function explain(status, path, text) {
+  const short = path.replace(/^\/v\d+\//, "");
+  if (status === 401) return "Ozon не принял ключ (401). Проверьте Client-Id и Api-Key: ключ показывается в кабинете один раз, при потере создайте новый.";
+  if (status === 403) return `Нет прав (403): у ключа нет доступа к методу «${short}». Создайте ключ с ролью «Admin read only» (или «Supply order ReadOnly» плюс чтение товаров и аналитики).`;
+  if (status === 404) return `Метод «${short}» не найден (404). Возможно, Ozon изменил API — проверьте обновления инструмента.`;
+  if (status === 400) return `Ozon отклонил запрос «${short}» (400)${text ? ": " + text : ""}.`;
+  if (status === 429) return `Ozon ограничивает частоту запросов (429) на «${short}». Подождите минуту и нажмите «Обновить».`;
+  if (status >= 500) return `Ошибка на стороне Ozon (${status}) в «${short}». Попробуйте позже.`;
+  return `Ошибка ${status} в «${short}»${text ? ": " + text : ""}.`;
+}
+async function api(path, body, opts = {}) {
+  const signal = opts.signal || (S.abort && S.abort.signal);
+  const max429 = opts.max429 ?? 6;
+  let n429 = 0, n5 = 0, nNet = 0;
+  for (;;) {
+    await throttle(signal);
+    let r;
+    try {
+      r = S.demo
+        ? await demoFetch(path, body || {})
+        : await fetch(API_BASE + path, {
+            method: "POST", signal, cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer",
+            headers: { "Client-Id": S.creds.id, "Api-Key": S.creds.key, "Content-Type": "application/json" },
+            body: JSON.stringify(body || {})
+          });
+    } catch (e) {
+      if (e && e.name === "AbortError") throw e;
+      // часть ответов 429 приходит без CORS-заголовков и выглядит как «обрыв связи» — пробуем ещё пару раз
+      if (!S.demo && nNet < 3) { nNet++; nextAt = Math.max(nextAt, Date.now() + 2500 * nNet); await sleep(2500 * nNet, signal); continue; }
+      throw new ApiError("network", 0, "Нет связи с api-seller.ozon.ru. Проверьте интернет, VPN и расширения-блокировщики.", path);
+    }
+    if (r.ok) { try { return await r.json(); } catch (e) { throw new ApiError("parse", r.status, `Ozon вернул не-JSON на «${path}».`, path); } }
+    let text = "";
+    try { const j = await r.json(); text = j && j.message ? String(j.message).slice(0, 220) : ""; } catch (e) {}
+    if (r.status === 429 && n429 < max429) {
+      const wait = opts.wait429 ?? Math.min(2000 * 2 ** n429, 30000);
+      n429++;
+      nextAt = Math.max(nextAt, Date.now() + wait); // общая пауза: остальные запросы тоже ждут
+      note(`Ozon просит подождать (429) — повтор через ${Math.round(wait / 1000)} с…`);
+      await sleep(wait, signal);
+      continue;
+    }
+    if (r.status >= 500 && n5 < 2) { n5++; await sleep(1500 * n5, signal); continue; }
+    const kind = r.status === 401 ? "auth" : r.status === 403 ? "perm" : "http";
+    throw new ApiError(kind, r.status, explain(r.status, path, text), path);
+  }
+}
+async function pool(items, size, fn) {
+  let i = 0;
+  const workers = Array.from({ length: Math.min(size, items.length) }, async () => {
+    while (i < items.length) { const k = i++; await fn(items[k], k); }
+  });
+  await Promise.all(workers);
+}
+
+/* ---------------- прогресс ---------------- */
+const PHASES = [[0, 12], [12, 40], [40, 50], [50, 90], [90, 100]];
+function note(t) { $("progText").textContent = t; }
+function progress(phase, done, total, text) {
+  const [a, b] = PHASES[phase];
+  const pct = Math.min(100, Math.round(a + (b - a) * (total ? done / total : 1)));
+  $("progBar").style.width = pct + "%";
+  $("progPct").textContent = pct + "%";
+  if (text) note(text);
+}
+function showProgress(on) { $("progress").hidden = !on; if (on) { $("progBar").style.width = "0%"; $("progPct").textContent = "0%"; } }
+
+/* ---------------- справочники и преобразование ---------------- */
+const ACTIVE_STATES = ["DATA_FILLING", "READY_TO_SUPPLY", "ACCEPTED_AT_SUPPLY_WAREHOUSE", "IN_TRANSIT", "ACCEPTANCE_AT_STORAGE_WAREHOUSE", "REPORTS_CONFIRMATION_AWAITING", "REPORT_REJECTED"];
+const FINAL_STATES = ["COMPLETED", "REJECTED_AT_SUPPLY_WAREHOUSE", "CANCELLED", "OVERDUE"];
+const STAGE_BY_STATE = {
+  DATA_FILLING: "wait", READY_TO_SUPPLY: "wait", OVERDUE: "wait",
+  ACCEPTED_AT_SUPPLY_WAREHOUSE: "sc", IN_TRANSIT: "transit",
+  ACCEPTANCE_AT_STORAGE_WAREHOUSE: "acceptance", REPORTS_CONFIRMATION_AWAITING: "acceptance",
+  COMPLETED: "stock", REPORT_REJECTED: "return_reject", REJECTED_AT_SUPPLY_WAREHOUSE: "return_sc", CANCELLED: "cancelled"
+};
+const STATE_TITLE = {
+  DATA_FILLING: "заполнение данных", READY_TO_SUPPLY: "готова к отгрузке", ACCEPTED_AT_SUPPLY_WAREHOUSE: "принята на точке сдачи",
+  IN_TRANSIT: "в пути", ACCEPTANCE_AT_STORAGE_WAREHOUSE: "приёмка на складе", REPORTS_CONFIRMATION_AWAITING: "ждёт согласования актов",
+  REPORT_REJECTED: "акт отклонён", COMPLETED: "завершена", REJECTED_AT_SUPPLY_WAREHOUSE: "отказ на точке сдачи", CANCELLED: "отменена", OVERDUE: "просрочена"
+};
+const REASON = { return_reject: "Акт отклонён", return_sc: "Отказ на точке сдачи", cancelled: "Заявка отменена" };
+const TRACK_TITLE = { PROCESSED: "обработано", ON_TRANSIT_WAREHOUSE: "на транзитном складе", ACCEPTING: "принимается", ON_WAREHOUSE: "на складе", UNSPECIFIED: "—" };
+const ACT_TYPE = { ACCEPTANCE: "Акт приёмки", DEFECT: "Акт брака", SURPLUS: "Акт излишков" };
+const ACT_STATE = { AWAITING_APPROVAL_BY_SELLER: "ждёт вашего согласования", APPROVED: "согласован", APPROVED_BY_SELLER: "согласован", REJECTED: "отклонён", AUTO_APPROVED: "согласован автоматически" };
+const CARD_COLORS = ["#005BFF", "#F91155", "#06CA99", "#FF9F1C", "#7B61FF", "#00A2FF", "#090089", "#B8860B", "#28D1EB", "#C2185B", "#2E7D32", "#6D4C41"];
+const ORDER_COLORS = ["#005BFF", "#090089", "#F91155", "#00A2FF", "#06CA99", "#7B61FF", "#FF9F1C", "#28D1EB"];
+
+function offsetMs(tz) { const m = /^(-?\d+)s$/.exec((tz && tz.offset) || ""); return m ? Number(m[1]) * 1000 : 0; }
+function localParts(iso, tz) {
+  if (!iso) return { date: "", time: "" };
+  const t = Date.parse(iso);
+  if (isNaN(t)) return { date: "", time: "" };
+  try {
+    if (tz && tz.iana_name) {
+      const f = new Intl.DateTimeFormat("sv-SE", { timeZone: tz.iana_name, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(t));
+      return { date: f.slice(0, 10), time: f.slice(11, 16) };
+    }
+  } catch (e) {}
+  const s = new Date(t + offsetMs(tz)).toISOString();
+  return { date: s.slice(0, 10), time: s.slice(11, 16) };
+}
+function prettyWarehouse(raw) { const t = String(raw || "").replace(/_/g, " ").trim(); return t ? t.charAt(0) + t.slice(1).toLowerCase() : ""; }
+function dropoffShort(raw) {
+  const t = String(raw || "").replace(/^(МСК|МО|СПБ|ЛО|Москва|СПб)_/i, "").replace(/_(ХАБ|КГТ|РФЦ|ППЗ|XD|СЦ|ПВЗ|АППЗ)(?=_|$)/gi, "").replace(/_?\d+$/g, "");
+  return prettyWarehouse(t) || raw || "—";
+}
+function hashColor(key, palette) { let h = 0; for (const ch of String(key)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return palette[h % palette.length]; }
+
+async function fetchBundle(bundleId) {
+  const items = [];
+  let last = "";
+  for (let guard = 0; guard < 50; guard++) {
+    const r = await api("/v1/supply-order/bundle", { bundle_ids: [bundleId], limit: 100, is_asc: true, last_id: last });
+    (r.items || []).forEach((i) => items.push(i));
+    if (!r.has_next || !r.last_id) break;
+    last = r.last_id;
+  }
+  return items;
+}
+/* ---------------- склейки ----------------
+   Склейка в Ozon = «Объединить на одной карточке» (атрибут 8292). В API это model_info.model_id
+   в /v3/product/info/list: у всех товаров склейки он одинаковый, а названия могут быть разными (SEO).
+   Если model_id нет (0 или товар не найден) — товар считается отдельной карточкой. */
+function newCatalog() { return { bySku: new Map(), models: new Map(), full: false, err: null, groups: new Map() }; }
+function addInfo(cat, it) {
+  if (!it || !it.sku) return;
+  const mi = it.model_info || {};
+  const e = { sku: String(it.sku), product_id: it.id, name: it.name || it.offer_id || String(it.sku), offer_id: it.offer_id || "", archived: Boolean(it.is_archived || it.is_autoarchived), model_id: Number(mi.model_id) || 0 };
+  cat.bySku.set(e.sku, e);
+  if (e.model_id) { if (!cat.models.has(e.model_id)) cat.models.set(e.model_id, new Map()); cat.models.get(e.model_id).set(e.sku, e); }
+}
+async function fetchInfo(cat, filter, ids, label) {
+  for (let i = 0; i < ids.length; i += 1000) {
+    const r = await api("/v3/product/info/list", { [filter]: ids.slice(i, i + 1000) });
+    (r.items || []).forEach((it) => addInfo(cat, it));
+    if (label) note(`${label}: ${Math.min(i + 1000, ids.length)} из ${ids.length}`);
+  }
+}
+async function loadFullCatalog(cat) {
+  if (cat.full) return;
+  if (cat.err) throw cat.err;
+  try {
+    const ids = [];
+    let last = "";
+    for (let guard = 0; guard < 100; guard++) {
+      const r = await api("/v3/product/list", { filter: { visibility: "ALL" }, last_id: last, limit: 1000 });
+      const res = r.result || {};
+      (res.items || []).forEach((i) => { if (i.product_id) ids.push(i.product_id); });
+      last = res.last_id || "";
+      if (!last || (res.items || []).length < 1000) break;
+    }
+    await fetchInfo(cat, "product_id", ids, "Каталог товаров и склейки");
+    cat.full = true;
+  } catch (e) { if (!fatal(e)) cat.err = e; throw e; }
+}
+function commonWords(names) {
+  const norm = (w) => w.toLowerCase().replace(/[.,;:()]/g, "");
+  const sets = names.map((n) => new Set(n.split(/\s+/).map(norm)));
+  return names[0].split(/\s+/).filter((w) => sets.every((st) => st.has(norm(w)))).join(" ");
+}
+/* Имя склейки: общее название; если названия разные — общая часть (от 2 слов), иначе самое частое название. */
+function modelGroup(cat, mid) {
+  if (cat.groups.has(mid)) return cat.groups.get(mid);
+  const all = [...(cat.models.get(mid) || new Map()).values()];
+  const live = all.filter((e) => !e.archived), list = live.length ? live : all;
+  const cnt = new Map();
+  list.forEach((e) => cnt.set(e.name, (cnt.get(e.name) || 0) + 1));
+  const names = [...cnt.entries()].sort((a, b) => b[1] - a[1]).map(([n]) => n);
+  let name = names[0] || "";
+  if (names.length > 1) { const c = commonWords(names); if (c.split(" ").length >= 2) name = c; }
+  const g = { name, variants: list.length, names: names.length };
+  cat.groups.set(mid, g);
+  return g;
+}
+function groupOf(it) {
+  const cat = S.catalog, own = it.name || it.offer_id || String(it.sku);
+  const e = cat && cat.bySku.get(String(it.sku));
+  if (e && e.model_id) { const g = modelGroup(cat, e.model_id); return { key: "m" + e.model_id, name: g.name || own, variants: g.variants }; }
+  return { key: "s" + (it.sku || it.offer_id || own), name: own, variants: 1 };
+}
+function toSegments(items) {
+  const by = new Map();
+  items.forEach((it) => {
+    const g = groupOf(it), own = it.name || it.offer_id || String(it.sku);
+    if (!by.has(g.key)) by.set(g.key, { card_id: g.key, name: g.name, variants: g.variants, qty: 0, items: [] });
+    const seg = by.get(g.key);
+    seg.qty += it.quantity || 0;
+    seg.items.push({ offer_id: it.offer_id || "", name: own, qty: it.quantity || 0, sku: it.sku, barcode: it.barcode || "" });
+  });
+  return [...by.values()].sort((a, b) => b.qty - a.qty);
+}
+const fatal = (e) => e && (e.name === "AbortError" || e.kind === "auth");
+
+async function loadSupplies(days) {
+  const warnings = [];
+  if (!S.catalog) S.catalog = newCatalog();
+  const cutoff = Date.now() - days * 86400000;
+  progress(0, 0, 1, "Справочник кластеров…");
+  const clusters = new Map();
+  try {
+    const r = await api("/v2/cluster/list", {});
+    (r.result || []).forEach((c) => {
+      const nm = c.data && c.data.macrolocal_cluster && c.data.macrolocal_cluster.name;
+      if (nm) clusters.set(String(c.macrolocal_cluster_id), nm);
+    });
+  } catch (e) { if (fatal(e)) throw e; warnings.push("Не удалось загрузить названия кластеров — показаны их номера."); }
+
+  // 1. заявки: активные без ограничения по возрасту, завершённые — в пределах периода
+  const orders = new Map();
+  async function pull(states, useCutoff) {
+    let last = "";
+    for (let guard = 0; guard < 200; guard++) {
+      const l = await api("/v3/supply-order/list", { filter: { states }, limit: 100, last_id: last, sort_by: "ORDER_CREATION", sort_dir: "DESC" });
+      const ids = l.order_ids || [];
+      let oldest = Infinity;
+      for (let i = 0; i < ids.length; i += 50) {
+        const g = await api("/v3/supply-order/get", { order_ids: ids.slice(i, i + 50) });
+        (g.orders || []).forEach((o) => { orders.set(String(o.order_id), o); oldest = Math.min(oldest, Date.parse(o.created_date) || Infinity); });
+        progress(0, orders.size, orders.size + 20, `Заявки на поставку: ${orders.size}…`);
+      }
+      last = l.last_id || "";
+      if (!ids.length || !last) break;
+      if (useCutoff && oldest < cutoff) break;
+    }
+  }
+  await pull(ACTIVE_STATES, false);
+  await pull(FINAL_STATES, true);
+  const orderList = [...orders.values()].filter((o) => ACTIVE_STATES.includes(o.state) || (Date.parse(o.created_date) || 0) >= cutoff);
+  progress(0, 1, 1, `Заявок: ${orderList.length}`);
+
+  // 2. состав каждой поставки
+  const sups = [];
+  orderList.forEach((o) => (o.supplies || []).forEach((s) => sups.push({ o, s })));
+  const bundles = new Map();
+  let doneB = 0;
+  await pool(sups, 2, async ({ s }) => {
+    if (s.bundle_id && !bundles.has(s.bundle_id)) {
+      bundles.set(s.bundle_id, null);
+      try { bundles.set(s.bundle_id, await fetchBundle(s.bundle_id)); }
+      catch (e) { if (fatal(e)) throw e; warnings.push(`Не загрузился состав поставки ${s.supply_id}: ${e.message}`); }
+    }
+    progress(1, ++doneB, sups.length, `Состав поставок: ${doneB} из ${sups.length}`);
+  });
+
+  // 3. грузоместа
+  const cargoBy = new Map();
+  const ids = sups.filter(({ s }) => s.state !== "CANCELLED").map(({ s }) => s.supply_id);
+  for (let i = 0; i < ids.length; i += 50) {
+    try {
+      const r = await api("/v1/cargoes/get", { supply_ids: ids.slice(i, i + 50) });
+      (r.supply || []).forEach((x) => cargoBy.set(String(x.supply_id), x.cargoes || []));
+    } catch (e) { if (fatal(e)) throw e; warnings.push("Грузоместа загружены не полностью: " + e.message); }
+    progress(2, Math.min(i + 50, ids.length), ids.length, `Грузоместа: ${Math.min(i + 50, ids.length)} из ${ids.length}`);
+  }
+
+  // 4. состав коробок
+  const cargos = [];
+  cargoBy.forEach((list) => list.forEach((c) => { if (c.bundle_id) cargos.push(c); }));
+  const boxItems = new Map();
+  let doneC = 0;
+  await pool(cargos, 2, async (c) => {
+    try { boxItems.set(c.bundle_id, await fetchBundle(c.bundle_id)); }
+    catch (e) { if (fatal(e)) throw e; boxItems.set(c.bundle_id, null); }
+    progress(3, ++doneC, cargos.length, `Состав коробок: ${doneC} из ${cargos.length}`);
+  });
+  if ([...boxItems.values()].some((v) => v === null)) warnings.push("Для части коробок состав не загрузился — они показаны серым.");
+
+  // 4а. склейки: каталог товаров (model_info.model_id)
+  progress(4, 0, 1, "Определяю склейки…");
+  try {
+    await loadFullCatalog(S.catalog);
+    const need = new Set();
+    bundles.forEach((l) => (l || []).forEach((i) => i.sku && need.add(String(i.sku))));
+    boxItems.forEach((l) => (l || []).forEach((i) => i.sku && need.add(String(i.sku))));
+    const miss = [...need].filter((k) => !S.catalog.bySku.has(k)).map(Number);
+    if (miss.length) await fetchInfo(S.catalog, "sku", miss, "Товары вне каталога");
+  } catch (e) {
+    if (fatal(e)) throw e;
+    warnings.push(`Склейки определить не удалось (${e.message}) — каждый товар показан отдельно.`);
+  }
+
+  // 5. сборка
+  const out = sups.map(({ o, s }) => buildSupply(o, s, { clusters, bundles, cargoBy, boxItems }));
+
+  // 6. акты по заявкам, где идёт приёмка или есть отказ
+  const actOrders = [...new Set(out.filter((x) => ["acceptance", "return_reject", "return_sc"].includes(x.stage)).map((x) => x.order_id))];
+  let doneA = 0;
+  await pool(actOrders, 1, async (oid) => {
+    try { await attachActs(out, oid); }
+    catch (e) { if (fatal(e)) throw e; warnings.push("Акты по заявке недоступны: " + e.message); }
+    progress(4, ++doneA, actOrders.length, `Акты приёмки: ${doneA} из ${actOrders.length}`);
+  });
+
+  out.sort((a, b) => (b.date || "").localeCompare(a.date || "") || b.id.localeCompare(a.id));
+  return { generated_at: new Date().toLocaleString("ru-RU"), window_days: days, warnings: [...new Set(warnings)], supplies: out };
+}
+
+function buildSupply(o, s, ctx) {
+  const state = s.state || o.state;
+  const known = Object.prototype.hasOwnProperty.call(STAGE_BY_STATE, state);
+  const stage = STAGE_BY_STATE[state] || "wait";
+  const tz = o.timeslot && o.timeslot.timezone_info;
+  const slot = (o.timeslot && o.timeslot.timeslot) || {};
+  const from = localParts(slot.from, tz), to = localParts(slot.to, tz);
+  const created = localParts(o.created_date, tz), upd = localParts(o.state_updated_date, tz);
+  const dw = o.drop_off_warehouse || {}, sw = s.storage_warehouse || {};
+  const cid = String(s.macrolocal_cluster_id || "");
+  const items = (s.bundle_id && ctx.bundles.get(s.bundle_id)) || [];
+  const cargoes = (ctx.cargoBy.get(String(s.supply_id)) || []).slice().sort((a, b) => String(a.cargo_id).localeCompare(String(b.cargo_id), "en", { numeric: true }));
+  let boxNo = 0, palNo = 0;
+  const boxes = cargoes.map((c) => {
+    const lst = c.bundle_id ? ctx.boxItems.get(c.bundle_id) : null;
+    const ti = c.tracking_info || {};
+    return {
+      id: String(c.cargo_id), label: c.type === "PALLET" ? `П${++palNo}` : `№${++boxNo}`, cargo_id: String(c.cargo_id), type: c.type,
+      tracking_date: ti.date || "", tracking_status: ti.status || "",
+      qty: lst ? lst.reduce((n, i) => n + (i.quantity || 0), 0) : null, segments: lst ? toSegments(lst) : []
+    };
+  });
+  const bundleQty = items.reduce((n, i) => n + (i.quantity || 0), 0);
+  const boxQty = boxes.reduce((n, b) => n + (b.qty || 0), 0);
+  if (!boxes.length && items.length) boxes.push({ id: "b-" + s.supply_id, label: "состав", cargo_id: "", type: "BUNDLE", tracking_date: "", tracking_status: "", qty: bundleQty, segments: toSegments(items) });
+  const timeline = [{ label: "Заявка создана", at: `${created.date} ${created.time}`.trim() }];
+  if (from.date) timeline.push({ label: "Слот отгрузки", at: `${from.date} ${from.time}${to.time ? "–" + to.time : ""}` });
+  if (upd.date) timeline.push({ label: "Статус обновлён", at: `${upd.date} ${upd.time}` });
+  new Set(boxes.map((b) => b.tracking_date).filter(Boolean)).forEach((d) => timeline.push({ label: "Отметка грузоместа", at: d }));
+  return {
+    id: String(s.supply_id), order_id: String(o.order_id), order_number: o.order_number || String(o.order_id),
+    date: from.date || created.date, slot_from: from.time, slot_to: to.time, created_at: `${created.date} ${created.time}`.trim(),
+    state, state_known: known, stage, reason: REASON[stage] || null, act_number: null, acts: null,
+    dropoff_name: dropoffShort(dw.name), dropoff_raw: dw.name || "", dropoff_address: dw.address || "",
+    cluster_id: cid, cluster_name: ctx.clusters.get(cid) || (sw.name ? prettyWarehouse(sw.name) : (cid ? "Кластер " + cid : "—")),
+    storage_name: sw.name ? prettyWarehouse(sw.name) : "", storage_address: sw.address || "",
+    overdue: state === "OVERDUE", qty: bundleQty || boxQty, boxes, timeline
+  };
+}
+
+async function attachActs(list, orderId) {
+  const r = await api("/v1/supply-order/act/summary/get", { order_id: Number(orderId) });
+  (r.supplies_acts || []).forEach((sa) => {
+    const sup = list.find((x) => x.id === String(sa.supply_id));
+    if (!sup) return;
+    sup.acts = (sa.supply_acts || []).map((a) => ({
+      id: a.act_id, number: a.act_number, type: a.type, state: a.act_state, created: a.created_date, deadline: a.deadline_utc,
+      declared: a.summary && a.summary.declared_quantity, fact: a.summary && a.summary.fact_quantity,
+      approved: a.summary && a.summary.approved_quantity, unidentified: a.summary && a.summary.unidentified_quantity
+    }));
+    const main = sup.acts.find((a) => a.type === "ACCEPTANCE") || sup.acts[0];
+    if (main) sup.act_number = main.number;
+  });
+}
+
+/* ---------------- остатки ---------------- */
+async function loadStocks() {
+  if (!S.catalog) S.catalog = newCatalog();
+  await loadFullCatalog(S.catalog);   // тот же каталог, что и для склеек
+  const skus = [...S.catalog.bySku.values()].filter((e) => !e.archived).map((e) => e.sku);
+  const items = [];
+  for (let i = 0; i < skus.length; i += 100) {
+    const r = await api("/v1/analytics/stocks", { skus: skus.slice(i, i + 100) });
+    (r.items || []).forEach((x) => { const g = groupOf(x); x.gkey = g.key; x.gname = g.name; x.gvariants = g.variants; items.push(x); });
+    progress(4, Math.min(i + 100, skus.length), skus.length, `Остатки: ${Math.min(i + 100, skus.length)} из ${skus.length} SKU…`);
+  }
+  return { generated_at: new Date().toLocaleString("ru-RU"), sku_count: skus.length, items };
+}
+/* ---------------- подсказки ⓘ: hover на десктопе, тап на мобильном ---------------- */
+const TIPS = {
+  avail: "Доступно к продаже: товар лежит на складе Ozon и прямо сейчас может быть куплен.",
+  transit: "В пути на склад: поставка уже отправлена, но Ozon ещё не принял товар. В расчётах планера считается как «почти на складе».",
+  reserve: "Зарезервировано под заказы покупателей, ещё не отгружено. Эти штуки уже куплены, поэтому в длину полосы они не входят.",
+  ret: "Возвраты: товар, который возвращается от покупателей или к вам и ещё не вернулся в продажу.",
+  defect: "Брак: товар, который Ozon признал негодным к продаже (повреждён, неполная комплектация и т. п.).",
+  docs: "Ждут документов: товар принят, но Ozon не может выставить его в продажу, пока не получит сопроводительные документы.",
+  grade: "Оборачиваемость: как Ozon оценивает скорость вашего остатка. «Дефицит» — товара мало относительно продаж, «Избыток» — товара много относительно продаж.",
+  cityHow: "Город берётся из названия кластера Ozon, а если его там нет, то из названия склада. Неизвестное попадает в «Прочее».",
+  speed: "Продаж в сутки: сколько штук в среднем продаётся за день в этом кластере.\nПо данным Ozon: поле ads_cluster, среднее примерно за 28 дней.\nПо отправлениям: проданные штуки за период ÷ число дней.",
+  stockDays: "Хватит, дн = (доступно + в пути) ÷ продаж в сутки.\nМеньше 7 дней — красный (риск остаться без товара), меньше 14 — жёлтый.",
+  need: "Нужно на N дней = округлить вверх(продаж в сутки × N × (1 + запас/100)). Это сколько штук надо иметь в кластере, чтобы продавать N дней без остановки.",
+  rec: "К отправке = max(0, нужно − доступно − в пути).\nЕсли задана кратность упаковки, результат округляется вверх до кратного числа.",
+  planAvail: "Остаток: доступно к продаже на складах кластера (без товара в пути).",
+  risk: "Риск считается по формуле «хватит, дн»: меньше 7 дней — риск out-of-stock, 7–14 — скоро кончится, больше 14 — ок. Если продаж нет, риска нет.",
+  cluster: "Кластер: группа складов Ozon одного региона. План строится по кластерам; конкретный склад внутри кластера Ozon назначает сам при выборе таймслота поставки.",
+  horizon: "Хватить на, дней: на сколько дней вперёд вы хотите иметь товар в кластере.\nВыбирайте срок не меньше, чем от отправки до продажи: время сборки и доставки на склад (обычно 7–14 дней) плюс интервал между вашими поставками.",
+  reservePct: "Запас, %: страховка на скачки спроса и задержки приёмки. 20% значит, что мы планируем на 20% больше расчётных продаж.\nНужно = продаж в сутки × дней × (1 + запас/100).",
+  pack: "Кратность упаковки: товар отправляется коробами или упаковками по N штук. Количество к отправке округляется вверх до числа, кратного N. Если отправляете поштучно — оставьте 1.",
+  srcSpeed: "Откуда берём скорость продаж.\nПо данным Ozon — готовое поле ads_cluster (≈28 дней), работает сразу.\nПо отправлениям — считаем сами из ваших отправлений за 30 или 60 дней (не отменённых), загрузка занимает до пары минут.",
+  onlyNeed: "Показывать только позиции, где есть что отправлять, или где товара хватит меньше чем на 14 дней. Снимите галочку, чтобы увидеть всё.",
+  ozonFiles: "Вместо одного отчёта скачается zip: по файлу на каждый кластер в формате шаблона Ozon (артикул, количество; имя не заполняется) плюс сводный отчёт.",
+  planRec: "К отправке, шт: сумма по всем позициям плана (формула: max(0, нужно − доступно − в пути), с учётом кратности).",
+  planSpeed: "Продаж в сутки: сумма скоростей продаж по всем позициям плана.",
+  planStock: "Остаток + в пути: сколько товара уже есть на складах и едет к ним. Эти штуки вычитаются из потребности.",
+  planRisk: "Позиций в риске: сколько пар «товар × кластер», где товара хватит меньше чем на 7 дней.",
+  planClusters: "Кластеров в плане: в скольких кластерах есть что отправлять.",
+  dropoff: "Точка сдачи: пункт, куда вы привозите товар для поставки (сортировочный центр или склад Ozon).",
+  loadDays: "За какой период загружать заявки на поставку. Чем длиннее период, тем дольше загрузка.",
+  clusterFilter: "Кластер: группа складов Ozon одного региона, в которую идёт поставка."
+};
+const tip = (k) => `<button type="button" class="ib" data-tipkey="${k}" aria-label="Подсказка"></button>`;
+const resChip = (n) => `<span class="chip res" data-tipkey="reserve" tabindex="0">Резерв ${num(n)}</span>`;
+(function () {
+  let pop = null, cur = null, t0 = 0;
+  const hide = () => { if (pop) pop.hidden = true; cur = null; };
+  function show(el) {
+    const text = TIPS[el.dataset.tipkey]; if (!text) return;
+    if (!pop) { pop = document.createElement("div"); pop.id = "tipPop"; pop.setAttribute("role", "tooltip"); document.body.appendChild(pop); }
+    pop.textContent = text; pop.hidden = false; if (cur !== el) t0 = Date.now(); cur = el;
+    const r = el.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight, vw = document.documentElement.clientWidth;
+    let x = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), vw - w - 8);
+    let y = r.bottom + 8; if (y + h > window.innerHeight - 8 && r.top - h - 8 > 8) y = r.top - h - 8;
+    pop.style.left = x + "px"; pop.style.top = y + "px";
+  }
+  const tgt = (e) => e.target.closest && e.target.closest("[data-tipkey]");
+  document.addEventListener("mouseover", (e) => { if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) return; const t = tgt(e); if (t) show(t); });
+  document.addEventListener("mouseout", (e) => { const t = tgt(e); if (t && !(e.relatedTarget && t.contains(e.relatedTarget))) hide(); });
+  document.addEventListener("focusin", (e) => { const t = tgt(e); if (t) show(t); });
+  document.addEventListener("focusout", hide);
+  document.addEventListener("click", (e) => { const t = tgt(e); if (t) { e.preventDefault(); e.stopPropagation(); if (cur === t && pop && !pop.hidden && Date.now() - t0 > 500) hide(); else show(t); } else hide(); }, true);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") hide(); });
+  window.addEventListener("scroll", hide, true); window.addEventListener("resize", hide);
+})();
+
+/* ============================================================
+   ПОСТАВКИ: интерфейс
+   ============================================================ */
+const COLUMNS = [
+  { id: "wait", title: "Ждёт отгрузки", stages: ["wait"], hint: "заявка есть, на точку сдачи ещё не привезена", c: "#E0C200" },
+  { id: "sc", title: "Сдана на точке", stages: ["sc"], hint: "приняли на точке сдачи", c: "#00A2FF" },
+  { id: "transit", title: "В пути", stages: ["transit"], hint: "едет на склад кластера", c: "#005BFF" },
+  { id: "acceptance", title: "Приёмка", stages: ["acceptance"], hint: "склад считает или ждёт акт", c: "#090089" },
+  { id: "stock", title: "На складе", stages: ["stock"], hint: "принято на остаток", c: "#06CA99" },
+  { id: "return", title: "Возврат", stages: ["return_reject", "return_sc", "cancelled"], hint: "не принято, отказ или отмена", c: "#F91155" }
+];
+const STATS = [
+  { id: "shipped", title: "Отгружено", key: "shipped_qty", stages: ["sc", "transit", "acceptance", "stock", "return_reject", "return_sc"] },
+  { id: "moving", title: "Едет", key: "moving_qty", stages: ["sc", "transit"] },
+  { id: "acceptance", title: "На приёмке", key: "acceptance_qty", stages: ["acceptance"] },
+  { id: "accepted", title: "Принято", key: "accepted_qty", stages: ["stock"] },
+  { id: "coming_back", title: "Вернётся с поставки", key: "coming_back_qty", stages: ["return_reject", "return_sc"] }
+];
+const STAGE_TITLE = { wait: "ждёт отгрузки", sc: "сдана на точке", transit: "в пути", acceptance: "приёмка", stock: "на складе", return_reject: "не принято", return_sc: "отказ на точке", cancelled: "отменена" };
+let statFilter = "";
+const cardColor = new Map();
+
+function supplies() { return (S.data && S.data.supplies) || []; }
+function paintCards() {
+  cardColor.clear();
+  const names = new Set();
+  supplies().forEach((s) => s.boxes.forEach((b) => b.segments.forEach((g) => names.add(g.card_id))));
+  [...names].sort().forEach((n, i) => cardColor.set(n, CARD_COLORS[i % CARD_COLORS.length]));
+}
+const colorOf = (seg) => cardColor.get(seg.card_id) || "#8C9BB5";
+const inRange = (s) => Boolean(s.date) && s.date >= $("from").value && s.date <= $("to").value;
+function textHit(s, q) {
+  if (!q) return true;
+  const blob = [s.order_number, s.cluster_name, s.dropoff_name, s.id, s.storage_name, ...s.boxes.flatMap((b) => b.segments.flatMap((g) => [g.name, ...g.items.flatMap((i) => [i.offer_id, i.name])]))].join(" ").toLowerCase();
+  return blob.includes(q);
+}
+function baseRows() {
+  const q = $("q").value.trim().toLowerCase(), dr = $("dropoff").value, cl = $("cluster").value;
+  return supplies().filter((s) => inRange(s) && (!dr || s.dropoff_name === dr) && (!cl || s.cluster_name === cl) && textHit(s, q));
+}
+function summarize(rows) {
+  const q = (stages) => rows.reduce((n, s) => n + (stages.includes(s.stage) ? s.qty : 0), 0);
+  return {
+    shipped_qty: q(STATS[0].stages), moving_qty: q(STATS[1].stages), acceptance_qty: q(STATS[2].stages),
+    accepted_qty: q(STATS[3].stages), coming_back_qty: q(STATS[4].stages), wait_qty: q(["wait"]), cancelled_qty: q(["cancelled"])
+  };
+}
+function fillSelect(id, values) {
+  const el = $(id), cur = el.value, list = [...values].sort((a, b) => a.localeCompare(b, "ru"));
+  el.innerHTML = '<option value="">Все</option>' + list.map((v) => `<option value="${esc(v)}">${esc(v)}</option>`).join("");
+  if (list.includes(cur)) el.value = cur;
+}
+function syncFilters() {
+  const rows = supplies().filter(inRange);
+  fillSelect("dropoff", new Set(rows.map((s) => s.dropoff_name).filter(Boolean)));
+  fillSelect("cluster", new Set(rows.map((s) => s.cluster_name).filter(Boolean)));
+}
+function renderStats(rows) {
+  const st = summarize(rows);
+  $("stats").innerHTML = STATS.map((i) => `<button type="button" class="stat${statFilter === i.id ? " active" : ""}" data-stat="${i.id}"><span>${esc(i.title)}</span><b>${num(st[i.key])}</b></button>`).join("");
+  const outside = [];
+  if (st.wait_qty) outside.push(`ждёт отгрузки ${num(st.wait_qty)}`);
+  if (st.cancelled_qty) outside.push(`отменено ${num(st.cancelled_qty)}`);
+  $("balance").textContent = `Отгружено ${num(st.shipped_qty)} = едет ${num(st.moving_qty)} + на приёмке ${num(st.acceptance_qty)} + принято ${num(st.accepted_qty)} + вернётся с поставки ${num(st.coming_back_qty)}.` + (outside.length ? ` ${outside.join(", ")} — в «отгружено» не входят.` : "");
+}
+function renderLegend(rows) {
+  const cards = new Map();
+  rows.forEach((s) => s.boxes.forEach((b) => b.segments.forEach((g) => { if (!cards.has(g.card_id)) cards.set(g.card_id, g); })));
+  const list = [...cards.values()].sort((a, b) => a.name.localeCompare(b.name, "ru"));
+  $("legend").innerHTML = list.map((g) => `<span><i class="swatch" style="background:${colorOf(g)}"></i>${esc(g.name)}${g.variants > 1 ? ` <small class="muted">· ${g.variants} вар.</small>` : ""}</span>`).join("") || '<span class="muted">В этом отборе карточек нет.</span>';
+}
+const orderKey = (s) => s.order_id || s.order_number;
+function boxButton(s, b) {
+  const bands = b.segments.map((g) => `<i class="band" style="flex:${g.qty} 1 0;background:${colorOf(g)}"></i>`).join("");
+  return `<button type="button" class="box" data-supply="${esc(s.id)}" data-box="${esc(b.id)}" title="${esc(b.label)}${b.qty != null ? " · " + b.qty + " шт" : ""}"><div class="carton">${bands}</div><small>${esc(b.label)}</small><span class="qty">${b.qty == null ? "?" : num(b.qty)}</span></button>`;
+}
+function elsewhere(key, stages, all) {
+  const c = new Map();
+  all.forEach((s) => { if (orderKey(s) === key && !stages.includes(s.stage)) c.set(s.stage, (c.get(s.stage) || 0) + 1); });
+  if (!c.size) return "";
+  return `<span class="elsewhere">остальные направления: ${esc([...c.entries()].map(([k, v]) => `${STAGE_TITLE[k] || k} ${v}`).join(", "))}</span>`;
+}
+function renderBoard(rows) {
+  $("board").innerHTML = COLUMNS.map((col) => {
+    const list = rows.filter((s) => col.stages.includes(s.stage));
+    const groups = new Map();
+    list.forEach((s) => { const k = orderKey(s); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(s); });
+    const pieces = list.reduce((n, s) => n + s.qty, 0);
+    const cards = [...groups.values()].map((g) => {
+      g.sort((a, b) => a.cluster_name.localeCompare(b.cluster_name, "ru"));
+      const h = g[0];
+      const slot = h.slot_from ? `${h.slot_from}${h.slot_to ? "–" + h.slot_to : ""}` : "";
+      const nb = g.reduce((n, s) => n + s.boxes.length, 0), q = g.reduce((n, s) => n + s.qty, 0);
+      const cancelled = g.every((s) => s.stage === "cancelled");
+      const badges = [g.some((s) => s.overdue) ? "просрочен слот" : "", g.some((s) => !s.state_known) ? "неизвестный статус" : "", cancelled ? "отменена" : ""].filter(Boolean).map((t) => `<span class="badge">${esc(t)}</span>`).join("");
+      const dirs = g.map((s) => `<div class="direction"><button type="button" class="directionName" data-supply="${esc(s.id)}"><b>${esc(s.cluster_name)}</b><span>${s.boxes.length} кор · ${num(s.qty)} шт</span></button><div class="boxes">${s.boxes.map((b) => boxButton(s, b)).join("")}</div></div>`).join("");
+      return `<article class="supply${cancelled ? " cancelled" : ""}" style="--frame:${hashColor(orderKey(h), ORDER_COLORS)}"><header data-supply="${esc(h.id)}"><strong>${esc(h.order_number)}</strong><em>${esc(ruDate(h.date))} ${esc(slot)} · ${esc(h.dropoff_name)} · ${g.length} напр. · ${nb} кор · ${num(q)} шт</em>${elsewhere(orderKey(h), col.stages, rows)}<div>${badges}</div></header>${dirs}</article>`;
+    }).join("");
+    return `<section class="column" style="--c:${col.c}"><h2>${esc(col.title)}</h2><div class="cmeta">${groups.size} пост. · ${list.length} напр. · ${num(pieces)} шт · ${esc(col.hint)}</div>${cards || '<div class="empty">Пусто</div>'}</section>`;
+  }).join("");
+}
+function renderReturns(rows) {
+  const lines = [];
+  rows.forEach((s) => {
+    if (s.stage !== "return_reject" && s.stage !== "return_sc") return;
+    s.boxes.forEach((b) => b.segments.forEach((g) => g.items.forEach((i) => lines.push({ s, b, g, i }))));
+  });
+  const cancelled = rows.filter((s) => s.stage === "cancelled").length;
+  let t = lines.length ? "Сюда входят и непринятый складом товар, и отказ на точке сдачи. Причина в строке — статус всей поставки; поартикульную причину отдаёт только построчный акт (кнопка в карточке поставки)." : "В этом отборе с поставки ничего не возвращается.";
+  if (cancelled) t += ` Отменённых поставок в колонке «Возврат»: ${cancelled}.`;
+  $("returnNote").textContent = t;
+  $("returns").innerHTML = lines.length ? `<div class="tableWrap"><table><thead><tr><th>Причина</th><th>Карточка</th><th>Артикул</th><th class="r">Шт</th><th>Заявка</th><th>Куда</th><th>Коробка</th><th>Акт</th></tr></thead><tbody>${lines.map((l) => `<tr class="clickable" data-supply="${esc(l.s.id)}" data-box="${esc(l.b.id)}"><td>${esc(l.s.reason || "—")}</td><td>${esc(l.g.name)}</td><td>${esc(l.i.offer_id)}</td><td class="r">${num(l.i.qty)}</td><td>${esc(l.s.order_number)}</td><td>${esc(l.s.cluster_name)}</td><td>${esc(l.b.label)}</td><td>${esc(l.s.act_number || "—")}</td></tr>`).join("")}</tbody></table></div>` : "";
+}
+function renderSupplies() {
+  const base = baseRows();
+  renderStats(base);
+  const rows = statFilter ? base.filter((s) => STATS.find((i) => i.id === statFilter).stages.includes(s.stage)) : base;
+  renderLegend(rows);
+  renderBoard(rows);
+  renderReturns(rows);
+}
+
+/* ---------------- карточка поставки ---------------- */
+function openDrawer(supplyId, boxId) {
+  const s = supplies().find((x) => x.id === supplyId);
+  if (!s) return;
+  const box = s.boxes.find((b) => b.id === boxId) || null;
+  const rows = (box ? [box] : s.boxes).flatMap((b) => b.segments.flatMap((g) => g.items.map((i) => `<tr><td>${esc(b.label)}</td><td><b>${esc(g.name)}</b>${i.name !== g.name ? `<br><span class="muted">${esc(i.name)}</span>` : ""}</td><td>${esc(i.offer_id)}</td><td class="r">${num(i.qty)}</td></tr>`)));
+  const acts = s.acts ? s.acts.map((a) => `<div class="drawerBox"><b>${esc(ACT_TYPE[a.type] || a.type)}</b> ${esc(a.number || "")}<br>${esc(ACT_STATE[a.state] || String(a.state || "").toLowerCase().replace(/_/g, " "))}<br>заявлено ${num(a.declared)} · принято по факту ${num(a.fact)} · согласовано ${num(a.approved)}${a.unidentified ? " · не опознано " + num(a.unidentified) : ""}${a.deadline ? "<br>согласовать до " + esc(String(a.deadline).slice(0, 10)) : ""}</div>`).join("") : "";
+  const canActs = ["acceptance", "stock", "return_reject", "return_sc"].includes(s.stage);
+  $("drawer").innerHTML = `
+    <button type="button" class="btn ghost" id="closeDrawer">Закрыть</button>
+    <h3>${esc(s.order_number)}</h3>
+    <div class="muted">поставка ${esc(s.id)} · ${esc(STATE_TITLE[s.state] || s.state)}</div>
+    <dl class="kv">
+      <dt>Направление</dt><dd>${esc(s.cluster_name)}${s.storage_name ? " · " + esc(s.storage_name) : ""}</dd>
+      <dt>Дата и слот</dt><dd>${esc(ruDate(s.date))} ${esc(s.slot_from)}${s.slot_to ? "–" + esc(s.slot_to) : ""}</dd>
+      <dt>Точка сдачи</dt><dd>${esc(s.dropoff_name)}<br><span class="muted">${esc(s.dropoff_address || s.dropoff_raw)}</span></dd>
+      <dt>Всего</dt><dd>${s.boxes.length} кор · ${num(s.qty)} шт</dd>
+      ${s.reason ? `<dt>Причина</dt><dd>${esc(s.reason)}</dd>` : ""}
+      ${box ? `<dt>Коробка</dt><dd>${esc(box.label)} · ${box.qty == null ? "состав не загружен" : num(box.qty) + " шт"}<br><span class="muted">${esc(box.cargo_id)} · ${esc(TRACK_TITLE[box.tracking_status] || box.tracking_status || "")}</span></dd>` : ""}
+    </dl>
+    <div id="actsBlock">${acts}</div>
+    ${canActs ? `<div class="loginBtns">${s.acts ? "" : '<button class="btn ghost" type="button" id="btnActs">Показать акты</button>'}<button class="btn ghost" type="button" id="btnActLines">Построчный акт</button></div><p class="muted" style="font-size:12px">Построчный акт Ozon отдаёт примерно раз в минуту — запрос может занять до нескольких минут.</p><div id="actLines"></div>` : ""}
+    <ul class="timeline">${s.timeline.map((t) => `<li><b>${esc(t.label)}</b><br>${esc(t.at)}</li>`).join("")}</ul>
+    <div class="tableWrap"><table><thead><tr><th>Кор.</th><th>Карточка</th><th>Артикул</th><th class="r">Шт</th></tr></thead><tbody>${rows.join("") || '<tr><td colspan="4" class="muted">Состав не загружен</td></tr>'}</tbody></table></div>`;
+  $("drawer").dataset.supply = s.id;
+  $("drawer").hidden = false; $("scrim").hidden = false;
+  $("drawer").scrollTop = 0;
+}
+function closeDrawer() { $("drawer").hidden = true; $("scrim").hidden = true; }
+async function drawerActs() {
+  const s = supplies().find((x) => x.id === $("drawer").dataset.supply);
+  if (!s) return;
+  const btn = $("btnActs"); if (btn) { btn.disabled = true; btn.textContent = "Загружаю…"; }
+  try { await attachActs(supplies(), s.order_id); openDrawer(s.id, ""); }
+  catch (e) { $("actsBlock").innerHTML = `<div class="err">${esc(e.message)}</div>`; if (btn) btn.disabled = false; }
+}
+async function drawerActLines() {
+  const s = supplies().find((x) => x.id === $("drawer").dataset.supply);
+  if (!s) return;
+  const btn = $("btnActLines"), out = $("actLines");
+  btn.disabled = true; out.innerHTML = '<p class="muted">Запрашиваю у Ozon…</p>';
+  try {
+    const r = await api("/v1/supply-order/act/product/get", { supply_id: Number(s.id) }, { max429: 4, wait429: 65000 });
+    const parts = (r.supply_acts || []).map((a) => {
+      const lines = (a.items || []).map((i) => `<tr><td>${esc(i.sku_info && i.sku_info.name)}<br><span class="muted">${esc(i.sku_info && i.sku_info.offer_id)}</span></td><td class="r">${num(i.declared_quantity)}</td><td class="r">${num(i.fact_quantity)}</td><td class="r">${num(i.approved_quantity)}</td></tr>`).join("");
+      return `<h4 style="margin:12px 0 4px">${esc(ACT_TYPE[a.type] || a.type)}${a.unidentified_quantity ? " · не опознано " + num(a.unidentified_quantity) : ""}</h4><div class="tableWrap"><table><thead><tr><th>Товар</th><th class="r">Заявл.</th><th class="r">Факт</th><th class="r">Принято</th></tr></thead><tbody>${lines || '<tr><td colspan="4" class="muted">нет строк</td></tr>'}</tbody></table></div>`;
+    });
+    const defects = (r.skus_defects || []).length ? `<div class="drawerBox"><b>Брак</b><br>${esc(JSON.stringify(r.skus_defects).slice(0, 800))}</div>` : "";
+    out.innerHTML = (parts.join("") + defects) || '<p class="muted">Ozon не вернул строк акта.</p>';
+  } catch (e) { out.innerHTML = `<div class="err">${esc(e.message)}</div>`; btn.disabled = false; }
+}
+
+/* ---------------- даты и фильтры ---------------- */
+function setPreset(name) {
+  const end = todayIso();
+  let start = shiftDays(end, -29), to = end;
+  if (name === "7") start = shiftDays(end, -6);
+  if (name === "month") start = end.slice(0, 8) + "01";
+  if (name === "all") {
+    const d = supplies().map((s) => s.date).filter(Boolean).sort();
+    start = d[0] || end; if (d.length && d[d.length - 1] > end) to = d[d.length - 1];
+  }
+  $("from").value = start; $("to").value = to;
+  document.querySelectorAll("#presets button").forEach((b) => b.classList.toggle("active", b.dataset.preset === name));
+  syncFilters(); renderSupplies();
+}
+
+/* ============================================================
+   ОСТАТКИ: интерфейс
+   ============================================================ */
+const GRADE = {
+  DEFICIT: ["Дефицит", "pink"], WAS_DEFICIT: ["Был дефицит", "pink"], POPULAR: ["Популярный", "green"], WAS_POPULAR: ["Был популярным", "green"],
+  ACTUAL: ["Актуальный", "blue"], WAS_ACTUAL: ["Был актуальным", "blue"], SURPLUS: ["Избыток", "yellow"], WAS_SURPLUS: ["Был избыток", "yellow"],
+  NO_SALES: ["Нет продаж", ""], WAS_NO_SALES: ["Были без продаж", ""], RESTRICTED_NO_SALES: ["Нет продаж (огранич.)", ""], COLLECTING_DATA: ["Сбор данных", "night"], WAITING_FOR_SUPPLY: ["Ждёт поставки", "night"]
+};
+const GRADE_PRIORITY = ["DEFICIT", "WAS_DEFICIT", "POPULAR", "ACTUAL", "SURPLUS", "NO_SALES", "COLLECTING_DATA"];
+const gradeName = (g) => (GRADE[g] || [g || "—"])[0];
+const gradeChip = (g) => { const x = GRADE[g] || [g || "—", ""]; return `<span class="chip ${x[1]}">${esc(x[0])}</span>`; };
+const expanded = new Set();
+const nz = (v) => Number(v) || 0;
+const gradeOf = (i) => i.turnover_grade_cluster || i.turnover_grade;
+const sMetrics = (i) => ({
+  avail: nz(i.available_stock_count), transit: nz(i.transit_stock_count), ret: nz(i.return_from_customer_stock_count) + nz(i.return_to_seller_stock_count),
+  defect: nz(i.stock_defect_stock_count) + nz(i.transit_defect_stock_count), docs: nz(i.waiting_docs_stock_count), pending: nz(i.outbound_pending_delivery)
+});
+function stockItems() {
+  if (!S.stocks) return [];
+  const q = $("sQ").value.trim().toLowerCase(), cl = $("sCluster").value, gr = $("sGrade").value, only = $("sNonZero").checked;
+  return S.stocks.items.filter((i) => {
+    if (cl && i.cluster_name !== cl) return false;
+    if (gr && gradeOf(i) !== gr) return false;
+    if (q && !`${i.name} ${i.gname} ${i.offer_id}`.toLowerCase().includes(q)) return false;
+    if (only) { const m = sMetrics(i); if (!(m.avail + m.transit + m.ret + m.defect + m.docs + m.pending > 0)) return false; }
+    return true;
+  });
+}
+function groupStocks(items) {
+  const byG = new Map(), zero = () => ({ avail: 0, transit: 0, ret: 0, defect: 0, docs: 0, pending: 0 });
+  items.forEach((i) => {
+    const key = i.gkey || "s" + i.sku;
+    if (!byG.has(key)) byG.set(key, { key, name: i.gname || i.name, variants: i.gvariants || 1, clusters: new Map(), skus: new Map() });
+    const p = byG.get(key), m = sMetrics(i);
+    if (!p.clusters.has(i.cluster_id)) p.clusters.set(i.cluster_id, { name: i.cluster_name || "Без кластера", ...zero(), ads: 0, idcs: [], grades: [] });
+    const c = p.clusters.get(i.cluster_id);
+    if (!p.skus.has(i.sku)) p.skus.set(i.sku, { sku: i.sku, name: i.name, offer_id: i.offer_id, ...zero(), ads: 0, grades: [], seen: new Set() });
+    const v = p.skus.get(i.sku);
+    ["avail", "transit", "ret", "defect", "docs", "pending"].forEach((k) => { c[k] += m[k]; v[k] += m[k]; });
+    // продажи/сут считаем один раз на пару «товар × кластер» (у склада одного кластера они одинаковые)
+    const pair = i.cluster_id + "|" + i.sku;
+    if (!v.seen.has(pair)) { v.seen.add(pair); const a = nz(i.ads_cluster ?? i.ads); c.ads += a; v.ads += a; }
+    c.grades.push(gradeOf(i)); v.grades.push(gradeOf(i));
+  });
+  const pickGrade = (gs) => GRADE_PRIORITY.find((g) => gs.includes(g)) || gs[0];
+  return [...byG.values()].map((p) => {
+    const cl = [...p.clusters.values()].map((c) => ({ ...c, grade: pickGrade(c.grades), idc: c.ads > 0 ? c.avail / c.ads : null }));
+    const vs = [...p.skus.values()].map((v) => ({ ...v, grade: pickGrade(v.grades), idc: v.ads > 0 ? v.avail / v.ads : null }));
+    const t = { avail: 0, transit: 0, ret: 0, defect: 0, docs: 0, pending: 0, ads: 0 };
+    cl.forEach((c) => { Object.keys(t).forEach((k) => { t[k] += c[k]; }); });
+    return { ...p, list: cl.sort((a, b) => b.avail - a.avail), vlist: vs.sort((a, b) => String(a.offer_id).localeCompare(String(b.offer_id), "ru", { numeric: true })), t, days: t.ads > 0 ? t.avail / t.ads : null, grade: pickGrade(cl.map((c) => c.grade)) };
+  }).sort((a, b) => b.t.avail - a.t.avail || b.t.transit - a.t.transit || String(a.name).localeCompare(String(b.name), "ru"));
+}
+function renderStocks() {
+  if (!S.stocks) { $("stockTable").innerHTML = '<tbody><tr><td class="muted">Остатки ещё не загружены.</td></tr></tbody>'; $("tiles").innerHTML = ""; $("clusterBars").innerHTML = ""; $("sMeta").textContent = ""; return; }
+  const items = stockItems();
+  $("sMeta").textContent = `Данные Ozon на ${S.stocks.generated_at} · SKU в каталоге: ${S.stocks.sku_count} · строк «склад × товар»: ${items.length}`;
+  const t = { avail: 0, transit: 0, ret: 0, defect: 0, docs: 0, pending: 0 };
+  items.forEach((i) => { const m = sMetrics(i); Object.keys(t).forEach((k) => { t[k] += m[k]; }); });
+  const tiles = [["Доступно к продаже", t.avail, "var(--blue)", "avail"], ["В пути на склад", t.transit, "var(--sky)", "transit"], ["Резерв", t.pending, "var(--night)", "reserve"], ["Возвраты", t.ret, "var(--ink)", "ret"], ["Брак", t.defect, "var(--pink)", "defect"], ["Ждут документов", t.docs, "var(--ink)", "docs"]];
+  $("tiles").innerHTML = tiles.map(([n, v, c, tk]) => `<div class="tile"><span>${n}${tk ? tip(tk) : ""}</span><b style="color:${c}">${num(v)}</b></div>`).join("");
+  const byCl = new Map();
+  items.forEach((i) => { const m = sMetrics(i); const cn = i.cluster_name || "Без кластера"; const c = byCl.get(cn) || { avail: 0, transit: 0 }; c.avail += m.avail; c.transit += m.transit; byCl.set(cn, c); });
+  const rowsC = [...byCl.entries()].filter(([, c]) => c.avail + c.transit > 0).sort((a, b) => b[1].avail + b[1].transit - a[1].avail - a[1].transit);
+  const mx = Math.max(1, ...rowsC.map(([, c]) => c.avail + c.transit));
+  $("clusterBars").innerHTML = rowsC.map(([n, c]) => `<div class="cbar"><span>${esc(n)}</span><div class="track"><i style="width:${c.avail / mx * 100}%;background:var(--blue)"></i><i style="width:${c.transit / mx * 100}%;background:var(--sky)"></i></div><span class="vals">${num(c.avail)} + ${num(c.transit)}</span></div>`).join("") || '<span class="muted">Нет данных по выбранным фильтрам.</span>';
+  const head = `<thead><tr><th>Товар</th><th class="r">Доступно${tip("avail")}</th><th class="r">В пути${tip("transit")}</th><th class="r">Возвраты${tip("ret")}</th><th class="r">Брак${tip("defect")}</th><th class="r">Продаж/сут${tip("speed")}</th><th class="r">Хватит, дн${tip("stockDays")}</th><th>Оборачиваемость${tip("grade")}</th></tr></thead>`;
+  const body = groupStocks(items).map((p) => {
+    const open = expanded.has(p.key), multi = p.vlist.length > 1;
+    const main = `<tr class="clickable" data-sku="${esc(p.key)}"><td><button class="twisty" type="button" aria-label="Развернуть по кластерам">${open ? "−" : "+"}</button><b>${esc(p.name)}</b><br><span class="muted">${multi ? `склейка · вариантов: ${num(p.vlist.length)}${p.variants > p.vlist.length ? " из " + num(p.variants) : ""}` : `${esc(p.vlist[0].offer_id)} · SKU ${esc(p.vlist[0].sku)}`}</span></td><td class="r"><b>${num(p.t.avail)}</b></td><td class="r">${num(p.t.transit)}</td><td class="r">${num(p.t.ret)}</td><td class="r">${num(p.t.defect)}</td><td class="r">${p.t.ads ? num(p.t.ads) : "—"}</td><td class="r">${p.days == null ? "—" : num(p.days)}</td><td>${gradeChip(p.grade)}</td></tr>`;
+    const row = (c, label) => `<tr class="sub"><td>${label}</td><td class="r">${num(c.avail)}</td><td class="r">${num(c.transit)}</td><td class="r">${num(c.ret)}</td><td class="r">${num(c.defect)}</td><td class="r">${c.ads ? num(c.ads) : "—"}</td><td class="r">${c.idc == null ? "—" : num(c.idc)}</td><td>${gradeChip(c.grade)}</td></tr>`;
+    const sep = (t) => `<tr class="sub subhead"><td colspan="8"><b>${t}</b></td></tr>`;
+    const subs = open ? (multi ? sep("По кластерам") : "") + p.list.map((c) => row(c, esc(c.name))).join("") + (multi ? sep("По вариантам (названия и артикулы)") + p.vlist.map((v) => row(v, `${esc(v.offer_id)}<br><span class="muted">${esc(v.name)}</span>`)).join("") : "") : "";
+    return main + subs;
+  }).join("");
+  $("stockTable").innerHTML = head + `<tbody>${body || '<tr><td colspan="8" class="muted">Нет данных по выбранным фильтрам.</td></tr>'}</tbody>`;
+}
+function fillStockFilters() {
+  const items = (S.stocks && S.stocks.items) || [];
+  const cl = $("sCluster"), gr = $("sGrade"), c0 = cl.value, g0 = gr.value;
+  const names = [...new Set(items.map((i) => i.cluster_name).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
+  cl.innerHTML = '<option value="">Все</option>' + names.map((n) => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  const grades = [...new Set(items.map(gradeOf).filter(Boolean))];
+  gr.innerHTML = '<option value="">Все</option>' + grades.map((g) => `<option value="${esc(g)}">${esc(gradeName(g))}</option>`).join("");
+  if (names.includes(c0)) cl.value = c0;
+  if (grades.includes(g0)) gr.value = g0;
+}
+function downloadCsv() {
+  const cell = (v) => { let s = String(v ?? ""); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return /[";\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const head = ["Склейка", "Товар", "Артикул", "SKU", "Кластер", "Склад", "Доступно", "В пути", "Возвраты", "Брак", "Ждут документов", "Продаж/сут (кластер)", "Хватит дней (кластер)", "Оборачиваемость"];
+  const lines = [head.map(cell).join(";")];
+  stockItems().forEach((i) => { const m = sMetrics(i); lines.push([i.gname, i.name, i.offer_id, i.sku, i.cluster_name, i.warehouse_name, m.avail, m.transit, m.ret, m.defect, m.docs, i.ads_cluster ?? i.ads, i.idc_cluster ?? i.idc, gradeName(gradeOf(i))].map(cell).join(";")); });
+  const blob = new Blob(["\ufeff" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `ozon-stocks-${todayIso()}.csv`; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+/* ============================================================
+   ЖИЗНЕННЫЙ ЦИКЛ: вход, загрузка, выход
+   ============================================================ */
+function showLogin(msg) {
+  $("app").hidden = true; $("login").hidden = false; closeDrawer();
+  const e = $("loginErr"); e.hidden = !msg; e.textContent = msg || "";
+  $("inKey").value = "";
+}
+function showApp() { $("login").hidden = true; $("app").hidden = false; $("demoTag").hidden = !S.demo; }
+function setErr(msg) { const e = $("appErr"); e.hidden = !msg; e.textContent = msg || ""; }
+function setTab(name) {
+  document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === name));
+  ["supplies", "stocks", "cities", "planner"].forEach((k) => { $("tab-" + k).hidden = name !== k; });
+  if (name === "planner" && S.stocks) renderPlanner();
+}
+function renderAll() {
+  paintCards(); syncFilters(); renderSupplies(); fillStockFilters(); renderStocks(); fillGroupSelect("cGroup"); renderCities(); fillPlannerFilters(); renderPlanner();
+  const d = S.data;
+  $("generated").textContent = d ? `Данные Ozon на ${d.generated_at} · загружено за ${d.window_days} дн. · поставок: ${d.supplies.length}` : "";
+  const w = $("appWarn"), warns = d ? d.warnings : [];
+  w.hidden = !warns.length; w.innerHTML = warns.map((x) => esc(x)).join("<br>");
+}
+async function runLoad() {
+  const id = ++S.loadId;
+  if (S.abort) S.abort.abort(); if (S.salesAbort) S.salesAbort.abort();
+  S.abort = new AbortController();
+  setErr(""); showProgress(true); $("btnReload").disabled = true;
+  const days = Number($("days").value) || 30;
+  try {
+    S.catalog = newCatalog(); S.sales = null;
+    S.data = await loadSupplies(days);
+    if (id !== S.loadId) return;
+    setPreset("30"); renderAll();
+    progress(4, 0, 1, "Загружаю остатки…");
+    try { S.stocks = await loadStocks(); }
+    catch (e) {
+      if (e.name === "AbortError" || e.kind === "auth") throw e;
+      S.stocks = null; setErr("Остатки не загрузились: " + e.message);
+    }
+    if (id !== S.loadId) return;
+    renderAll();
+    AuthorBlock.onSuccess(); // попап автора — один раз после первой успешной загрузки (в т.ч. демо)
+  } catch (e) {
+    if (id !== S.loadId) return;
+    if (e.name === "AbortError") setErr("Загрузка отменена.");
+    else if (e.kind === "auth" || (e.kind === "perm" && !S.data)) { wipeAll(); showLogin(e.message); }
+    else setErr(e.message || String(e));
+  } finally {
+    if (id === S.loadId) { showProgress(false); $("btnReload").disabled = false; }
+  }
+}
+function wipeAll() {
+  if (S.abort) S.abort.abort(); if (S.salesAbort) S.salesAbort.abort();
+  S.loadId++; S.creds = null; S.demo = false; S.data = null; S.stocks = null; S.catalog = null; S.sales = null; store.wipe();
+  $("inId").value = ""; $("inKey").value = "";
+  ["board", "returns", "stats", "legend", "tiles", "clusterBars", "stockTable", "cTiles", "cBars", "cityTable", "pTiles", "planClusters", "planTable", "drawer"].forEach((k) => { $(k).innerHTML = ""; });
+  closeDrawer(); showProgress(false); setErr("");
+}
+function start(creds, demo, days) {
+  S.creds = creds; S.demo = demo;
+  $("days").value = String(days || 30);
+  showApp(); setTab("supplies"); runLoad();
+}
+
+/* ---------------- события ---------------- */
+$("loginForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const id = $("inId").value.trim(), key = $("inKey").value.trim();
+  if (!id || !key) return showLogin("Введите Client-Id и Api-Key.");
+  if (/[^\x21-\x7E]/.test(key) || /[^\x21-\x7E]/.test(id)) return showLogin("В ключе есть пробелы или недопустимые символы. Скопируйте его заново.");
+  const creds = { id, key };
+  store.save(creds, $("inRemember").checked);
+  $("inKey").value = "";
+  start(creds, false, Number($("inDays").value));
+});
+$("btnDemo").addEventListener("click", () => start({ id: "demo", key: "demo" }, true, 60));
+$("btnLogout").addEventListener("click", () => { wipeAll(); showLogin(""); });
+$("btnReload").addEventListener("click", () => runLoad());
+$("btnCancel").addEventListener("click", () => { if (S.abort) S.abort.abort(); });
+$("days").addEventListener("change", () => runLoad());
+document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => setTab(t.dataset.tab)));
+["from", "to", "dropoff", "cluster"].forEach((id) => $(id).addEventListener("change", () => {
+  if (id === "from" || id === "to") document.querySelectorAll("#presets button").forEach((b) => b.classList.remove("active"));
+  renderSupplies();
+}));
+$("q").addEventListener("input", renderSupplies);
+$("presets").addEventListener("click", (e) => { const b = e.target.closest("button[data-preset]"); if (b) setPreset(b.dataset.preset); });
+$("stats").addEventListener("click", (e) => { const b = e.target.closest("[data-stat]"); if (!b) return; statFilter = statFilter === b.dataset.stat ? "" : b.dataset.stat; renderSupplies(); });
+function bindOpen(el) { el.addEventListener("click", (e) => { const t = e.target.closest("[data-supply]"); if (t) openDrawer(t.dataset.supply, t.dataset.box || ""); }); }
+bindOpen($("board")); bindOpen($("returns"));
+$("scrim").addEventListener("click", closeDrawer);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+$("drawer").addEventListener("click", (e) => {
+  if (e.target.closest("#closeDrawer")) closeDrawer();
+  else if (e.target.closest("#btnActs")) drawerActs();
+  else if (e.target.closest("#btnActLines")) drawerActLines();
+});
+["sCluster", "sGrade", "sNonZero"].forEach((id) => $(id).addEventListener("change", renderStocks));
+$("sQ").addEventListener("input", renderStocks);
+$("btnCsv").addEventListener("click", downloadCsv);
+$("stockTable").addEventListener("click", (e) => { const r = e.target.closest("tr[data-sku]"); if (!r) return; const k = r.dataset.sku; if (expanded.has(k)) expanded.delete(k); else expanded.add(k); renderStocks(); });
+
+/* ============================================================
+   ВКЛАДКА «ПО ГОРОДАМ»: сколько товара сейчас в каждом городе
+   Город = из названия кластера Ozon («Москва, МО и Дальние регионы» → Москва),
+   если кластера нет — из названия склада («КАЗАНЬ_РФЦ_НОВЫЙ» → Казань), иначе «Прочее».
+   ============================================================ */
+const csvCell = (v) => { let s = String(v ?? ""); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return /[";\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+function saveBlob(blob, name) {
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+const saveCsv = (rows, name) => saveBlob(new Blob(["\ufeff" + rows.map((r) => r.map(csvCell).join(";")).join("\r\n")], { type: "text/csv;charset=utf-8" }), name);
+const titleCase = (w) => w.toLowerCase().replace(/(^|-)([a-zа-яё])/g, (m, a, b) => a + b.toUpperCase());
+const WH_NOISE = /^(РФЦ|МРФЦ|ФЦ|СЦ|МПСЦ|ХАБ|НОВЫЙ|НОВАЯ|СТАРЫЙ|ДЕМО|КГТ|\d+)$/;
+function cityOf(i) {
+  const fromCluster = String(i.cluster_name || "").split(",")[0].split(/\s+и\s+/)[0].trim();
+  if (fromCluster) return fromCluster;
+  const parts = String(i.warehouse_name || "").split("_").filter(Boolean);
+  if (!parts.length || /^(ПВЗ|ППЗ|PVZ)$/i.test(parts[0])) return "Прочее";
+  const words = parts.filter((p) => !WH_NOISE.test(p.toUpperCase()));
+  return words.length ? titleCase(words.join(" ")) : "Прочее";
+}
+/* общий контрол «Склейка» (вкладки «По городам» и «Планер поставок») */
+function fillGroupSelect(id) {
+  const sel = $(id), g0 = sel.value, gs = new Map();
+  ((S.stocks && S.stocks.items) || []).forEach((i) => { if (!gs.has(i.gkey)) gs.set(i.gkey, i.gname + (i.gvariants > 1 ? ` · ${i.gvariants} вар.` : "")); });
+  sel.innerHTML = '<option value="">Все склейки</option>' + [...gs.entries()].sort((a, b) => a[1].localeCompare(b[1], "ru")).map(([k, n]) => `<option value="${esc(k)}">${esc(n)}</option>`).join("");
+  if (gs.has(g0)) sel.value = g0;
+}
+function cityRows() {
+  if (!S.stocks) return [];
+  const g = $("cGroup").value, q = $("cQ").value.trim().toLowerCase(), only = $("cNonZero").checked;
+  return S.stocks.items.filter((i) => {
+    const m = sMetrics(i);
+    if (g && i.gkey !== g) return false;
+    if (only && !(m.avail + m.transit + m.pending > 0)) return false;
+    return !q || `${cityOf(i)} ${i.cluster_name} ${i.warehouse_name} ${i.name} ${i.gname} ${i.offer_id}`.toLowerCase().includes(q);
+  });
+}
+function groupCities(items) {
+  const by = new Map(), z = () => ({ avail: 0, transit: 0, pending: 0 });
+  const add = (o, m) => { o.avail += m.avail; o.transit += m.transit; o.pending += m.pending; };
+  items.forEach((i) => {
+    const m = sMetrics(i), cn = cityOf(i);
+    if (!by.has(cn)) by.set(cn, { name: cn, ...z(), clusters: new Set(), wh: new Map(), g: new Map() });
+    const c = by.get(cn); add(c, m);
+    if (i.cluster_name) c.clusters.add(i.cluster_name);
+    const wk = i.warehouse_id + "|" + i.warehouse_name;
+    if (!c.wh.has(wk)) c.wh.set(wk, { name: i.warehouse_name || "—", ...z() });
+    add(c.wh.get(wk), m);
+    const gk = i.gkey || "s" + i.sku;
+    if (!c.g.has(gk)) c.g.set(gk, { key: gk, name: i.gname || i.name, ...z(), skus: new Map() });
+    const g = c.g.get(gk); add(g, m);
+    if (!g.skus.has(i.sku)) g.skus.set(i.sku, { sku: i.sku, name: i.name, offer_id: i.offer_id, ...z() });
+    add(g.skus.get(i.sku), m);
+  });
+  return [...by.values()].map((c) => ({ ...c, whList: [...c.wh.values()].sort((a, b) => b.avail - a.avail || b.transit - a.transit), gList: [...c.g.values()].map((g) => ({ ...g, sList: [...g.skus.values()].sort((a, b) => String(a.offer_id).localeCompare(String(b.offer_id), "ru", { numeric: true })) })).sort((a, b) => b.avail - a.avail || b.transit - a.transit) }))
+    .sort((a, b) => (a.name === "Прочее") - (b.name === "Прочее") || b.avail - a.avail || b.transit - a.transit);
+}
+const cityExpanded = new Set();
+function renderCities() {
+  if (!S.stocks) { $("cityTable").innerHTML = '<tbody><tr><td class="muted">Остатки ещё не загружены.</td></tr></tbody>'; $("cTiles").innerHTML = ""; $("cBars").innerHTML = ""; $("cMeta").textContent = ""; return; }
+  const items = cityRows(), cities = groupCities(items);
+  const t = { avail: 0, transit: 0, pending: 0 };
+  cities.forEach((c) => { t.avail += c.avail; t.transit += c.transit; t.pending += c.pending; });
+  $("cMeta").textContent = `Данные Ozon на ${S.stocks.generated_at} · городов: ${cities.length} · складов: ${new Set(items.map((i) => i.warehouse_id)).size}`;
+  $("cTiles").innerHTML = [["Городов с товаром", cities.length, "var(--ink)"], ["Доступно к продаже", t.avail, "var(--blue)", "avail"], ["В пути на склад", t.transit, "var(--sky)", "transit"], ["Резерв", t.pending, "var(--night)", "reserve"]]
+    .map(([n, v, c, tk]) => `<div class="tile"><span>${n}${tk ? tip(tk) : ""}</span><b style="color:${c}">${num(v)}</b></div>`).join("");
+  const mx = Math.max(1, ...cities.map((c) => c.avail + c.transit));
+  $("cBars").innerHTML = cities.map((c) => `<div class="cbar"><span>${esc(c.name)}</span><div class="track"><i style="width:${c.avail / mx * 100}%;background:var(--blue)"></i><i style="width:${c.transit / mx * 100}%;background:var(--sky)"></i></div><span class="vals">${num(c.avail)} + ${num(c.transit)} ${resChip(c.pending)}</span></div>`).join("") || '<span class="muted">Нет данных по выбранным фильтрам.</span>';
+  const head = `<thead><tr><th>Город</th><th class="r">Доступно${tip("avail")}</th><th class="r">В пути${tip("transit")}</th><th class="r">Резерв${tip("reserve")}</th><th class="r">Складов</th><th class="r">Склеек · SKU</th></tr></thead>`;
+  const nums = (o) => `<td class="r">${num(o.avail)}</td><td class="r">${num(o.transit)}</td><td class="r">${num(o.pending)}</td>`;
+  const body = cities.map((c) => {
+    const open = cityExpanded.has("c:" + c.name);
+    const nsku = c.gList.reduce((n, g) => n + g.sList.length, 0);
+    let out = `<tr class="clickable" data-city="${esc(c.name)}"><td><button class="twisty" type="button" aria-label="Развернуть">${open ? "−" : "+"}</button><b>${esc(c.name)}</b>${[...c.clusters].some((x) => x !== c.name) ? `<br><span class="muted">${esc([...c.clusters].join(", "))}</span>` : ""}</td>${nums(c)}<td class="r">${c.whList.length}</td><td class="r">${c.gList.length} · ${nsku}</td></tr>`;
+    if (!open) return out;
+    out += `<tr class="sub subhead"><td colspan="6"><b>Склады</b></td></tr>` + c.whList.map((w) => `<tr class="sub"><td>${esc(w.name)}</td>${nums(w)}<td></td><td></td></tr>`).join("");
+    out += `<tr class="sub subhead"><td colspan="6"><b>Склейки и SKU</b> <span style="text-transform:none;font-weight:400">· нажмите на склейку, чтобы увидеть размеры</span></td></tr>`;
+    c.gList.forEach((g) => {
+      const go = cityExpanded.has("g:" + c.name + "|" + g.key);
+      out += `<tr class="sub clickable" data-cg="${esc(c.name + "|" + g.key)}"><td><button class="twisty" type="button" aria-label="Развернуть склейку">${go ? "−" : "+"}</button>${esc(g.name)} <span class="muted">· SKU: ${g.sList.length}</span></td>${nums(g)}<td></td><td></td></tr>`;
+      if (go) out += g.sList.map((s) => `<tr class="sub2"><td>${esc(s.offer_id)}<br>${esc(s.name)}</td>${nums(s)}<td></td><td></td></tr>`).join("");
+    });
+    return out;
+  }).join("");
+  $("cityTable").innerHTML = head + `<tbody>${body || '<tr><td colspan="6" class="muted">Нет данных по выбранным фильтрам.</td></tr>'}</tbody>`;
+}
+function downloadCitiesCsv() {
+  const rows = [["Город", "Кластер", "Склад", "Склейка", "Товар", "Артикул", "SKU", "Доступно", "В пути", "Резерв (под заказы покупателей, ещё не отгружено)"]];
+  cityRows().slice().sort((a, b) => cityOf(a).localeCompare(cityOf(b), "ru") || String(a.warehouse_name).localeCompare(String(b.warehouse_name), "ru") || String(a.offer_id).localeCompare(String(b.offer_id), "ru"))
+    .forEach((i) => { const m = sMetrics(i); rows.push([cityOf(i), i.cluster_name, i.warehouse_name, i.gname, i.name, i.offer_id, i.sku, m.avail, m.transit, m.pending]); });
+  saveCsv(rows, `ozon-cities-${todayIso()}.csv`);
+}
+$("cQ").addEventListener("input", renderCities);
+$("cNonZero").addEventListener("change", renderCities);
+$("cGroup").addEventListener("change", renderCities);
+$("btnCitiesCsv").addEventListener("click", downloadCitiesCsv);
+$("cityTable").addEventListener("click", (e) => {
+  const g = e.target.closest("tr[data-cg]"), c = e.target.closest("tr[data-city]");
+  const k = g ? "g:" + g.dataset.cg : c ? "c:" + c.dataset.city : "";
+  if (!k) return;
+  if (cityExpanded.has(k)) cityExpanded.delete(k); else cityExpanded.add(k);
+  renderCities();
+});
+
+/* ============================================================
+   ВКЛАДКА «ПЛАНЕР ПОСТАВОК»
+   Склейка → размер (SKU) → кластер: скорость продаж, остаток, в пути, запас в днях и рекомендация к отправке.
+   Скорость продаж: либо ads_cluster из /v1/analytics/stocks (среднее по данным Ozon, примерно за 28 дней, без доп. запросов),
+   либо считается по отправлениям FBO (/v3/posting/fbo/list, financial_data.cluster_from) за 30/60 дней — не отменённые.
+   ============================================================ */
+const pexp = new Set();
+const NO_CLUSTER = "Без кластера";
+function plannerParams() {
+  const n = (id, d, lo, hi) => Math.min(hi, Math.max(lo, Number($(id).value) || d));
+  return { n: Math.round(n("pN", 30, 1, 365)), z: n("pZ", 20, 0, 300), k: Math.round(n("pK", 1, 1, 1000)), src: $("pSrc").value, cluster: $("pCluster").value, group: $("pGroup").value, only: $("pOnly").checked };
+}
+async function loadSales(days, signal) {
+  const now = new Date(), since = new Date(now.getTime() - days * 86400000);
+  const body = { dir: "ASC", filter: { since: since.toISOString().slice(0, 10) + "T00:00:00Z", to: now.toISOString().slice(0, 19) + "Z" }, limit: 100, translit: false, with: { analytics_data: false, financial_data: true } };
+  const map = new Map(), info = new Map();
+  let n = 0, cursor = "";
+  for (let guard = 0; guard < 600; guard++) {
+    if (cursor) body.cursor = cursor;
+    const r = await api("/v3/posting/fbo/list", body, { signal });
+    const list = r.postings || (r.result && r.result.postings) || [];
+    list.forEach((p) => {
+      n++;
+      if (p.status === "cancelled") return;
+      const cl = (p.financial_data && p.financial_data.cluster_from) || NO_CLUSTER;
+      (p.products || []).forEach((pr) => {
+        const k = pr.sku + "|" + cl;
+        map.set(k, (map.get(k) || 0) + (pr.quantity || 0));
+        if (!info.has(String(pr.sku))) info.set(String(pr.sku), { name: pr.name, offer_id: pr.offer_id });
+      });
+    });
+    $("pMeta").textContent = `Читаю отправления за ${days} дн.: ${n} шт…`;
+    cursor = r.cursor || "";
+    if (!r.has_next || !cursor) break;
+  }
+  return { days, map, info, count: n, at: new Date().toLocaleString("ru-RU") };
+}
+let salesBusy = false;
+async function ensureSales(P) {
+  if (P.src === "ozon" || salesBusy) return;
+  const days = Number(P.src);
+  if (S.sales && S.sales.days === days) return;
+  salesBusy = true; $("pSrc").disabled = true;
+  const id = S.loadId;
+  if (S.salesAbort) S.salesAbort.abort();
+  S.salesAbort = new AbortController();
+  try { const s = await loadSales(days, S.salesAbort.signal); if (id === S.loadId) S.sales = s; }
+  catch (e) { if (e.name !== "AbortError" && id === S.loadId) { setErr("Продажи по отправлениям не загрузились: " + e.message); $("pSrc").value = "ozon"; } }
+  finally { salesBusy = false; $("pSrc").disabled = false; }
+  renderPlanner();
+}
+function plannerData(P) {
+  const rows = new Map();
+  const useSales = P.src !== "ozon" && S.sales && S.sales.days === Number(P.src);
+  const seenAds = new Set();
+  ((S.stocks && S.stocks.items) || []).forEach((i) => {
+    const cn = i.cluster_name || NO_CLUSTER, k = i.sku + "|" + cn, m = sMetrics(i);
+    if (!rows.has(k)) rows.set(k, { gkey: i.gkey || "s" + i.sku, gname: i.gname || i.name, gvariants: i.gvariants || 1, sku: i.sku, name: i.name, offer_id: i.offer_id, cluster: cn, avail: 0, transit: 0, v: 0 });
+    const r = rows.get(k); r.avail += m.avail; r.transit += m.transit;
+    if (!seenAds.has(k)) { seenAds.add(k); r.v = nz(i.ads_cluster ?? i.ads); }
+  });
+  if (P.src !== "ozon" && !useSales) return null;
+  if (useSales) {
+    rows.forEach((r) => { r.v = 0; });
+    S.sales.map.forEach((qty, k) => {
+      const cut = k.indexOf("|"), sku = k.slice(0, cut), cn = k.slice(cut + 1);
+      if (!rows.has(k)) {
+        const inf = S.sales.info.get(sku) || {}, g = groupOf({ sku, name: inf.name, offer_id: inf.offer_id });
+        rows.set(k, { gkey: g.key, gname: g.name, gvariants: g.variants, sku, name: inf.name || inf.offer_id || sku, offer_id: inf.offer_id || "", cluster: cn, avail: 0, transit: 0, v: 0 });
+      }
+      rows.get(k).v = qty / S.sales.days;
+    });
+  }
+  const out = [];
+  rows.forEach((r) => {
+    if (P.cluster && r.cluster !== P.cluster) return;
+    if (P.group && r.gkey !== P.group) return;
+    const need = Math.ceil(r.v * P.n * (1 + P.z / 100) - 1e-9);
+    let rec = Math.max(0, need - r.avail - r.transit);
+    if (rec > 0 && P.k > 1) rec = Math.ceil(rec / P.k) * P.k;
+    const days = r.v > 0 ? (r.avail + r.transit) / r.v : null;
+    const risk = r.v <= 0 ? "none" : days < 7 ? "high" : days < 14 ? "mid" : "ok";
+    out.push({ ...r, need, rec, days, risk });
+  });
+  return out.filter((r) => !P.only || r.rec > 0 || r.risk === "high" || r.risk === "mid");
+}
+function agg(list) {
+  const a = { v: 0, avail: 0, transit: 0, need: 0, rec: 0, high: 0, mid: 0, n: list.length };
+  list.forEach((r) => { a.v += r.v; a.avail += r.avail; a.transit += r.transit; a.need += r.need; a.rec += r.rec; if (r.risk === "high") a.high++; else if (r.risk === "mid") a.mid++; });
+  a.days = a.v > 0 ? (a.avail + a.transit) / a.v : null;
+  a.risk = a.v <= 0 ? "none" : a.high ? "high" : a.mid ? "mid" : "ok";
+  return a;
+}
+const rate = (v) => v ? new Intl.NumberFormat("ru-RU", { maximumFractionDigits: v < 1 ? 2 : 1 }).format(v) : "0";
+const RISK = { high: ["Риск out-of-stock", "pink"], mid: ["Скоро кончится", "yellow"], ok: ["Ок", "green"], none: ["Нет продаж", ""] };
+const riskChip = (r) => `<span class="chip ${RISK[r][1]}">${RISK[r][0]}</span>`;
+function fillPlannerFilters() {
+  const items = (S.stocks && S.stocks.items) || [], c0 = $("pCluster").value;
+  const names = [...new Set(items.map((i) => i.cluster_name || NO_CLUSTER))].sort((a, b) => a.localeCompare(b, "ru"));
+  $("pCluster").innerHTML = '<option value="">Все</option>' + names.map((n) => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  fillGroupSelect("pGroup");
+  if (names.includes(c0)) $("pCluster").value = c0;
+}
+let planCache = null;
+function renderPlanner() {
+  const P = plannerParams();
+  if (!S.stocks) { $("planTable").innerHTML = '<tbody><tr><td class="muted">Остатки ещё не загружены.</td></tr></tbody>'; $("planClusters").innerHTML = ""; $("pTiles").innerHTML = ""; $("pMeta").textContent = ""; return; }
+  const data = plannerData(P);
+  if (!data) { // продажи по отправлениям ещё не загружены
+    $("pMeta").textContent = salesBusy ? $("pMeta").textContent : "Загружаю продажи по отправлениям…";
+    $("planTable").innerHTML = '<tbody><tr><td class="muted">Продажи по отправлениям загружаются — это занимает до пары минут.</td></tr></tbody>'; $("planClusters").innerHTML = ""; $("pTiles").innerHTML = "";
+    if (!$("tab-planner").hidden) ensureSales(P);
+    return;
+  }
+  planCache = { P, data };
+  const srcText = P.src === "ozon" ? "скорость — по данным Ozon (ads_cluster, ≈28 дн.)" : `скорость — по отправлениям за ${P.src} дн. (не отменённые: ${num(S.sales.count)} отправлений, загружено ${S.sales.at})`;
+  $("pMeta").textContent = `Остатки на ${S.stocks.generated_at} · ${srcText} · план на ${P.n} дн. с запасом ${P.z}%` + (P.k > 1 ? ` · кратность ${P.k} шт` : "");
+  const A = agg(data), byCl = new Map();
+  data.forEach((r) => { if (!byCl.has(r.cluster)) byCl.set(r.cluster, []); byCl.get(r.cluster).push(r); });
+  const clusters = [...byCl.entries()].map(([name, l]) => ({ name, ...agg(l) })).sort((a, b) => b.rec - a.rec || b.high - a.high || a.name.localeCompare(b.name, "ru"));
+  $("pTiles").innerHTML = [["К отправке, шт", A.rec, "var(--blue)", "planRec"], ["Продаж в сутки", A.v, "var(--ink)", "planSpeed"], ["Остаток + в пути (в плане)", A.avail + A.transit, "var(--sky)", "planStock"], ["Позиций в риске (<7 дн.)", A.high, "var(--pink)", "planRisk"], ["Кластеров в плане", clusters.filter((c) => c.rec > 0).length, "var(--night)", "planClusters"]]
+    .map(([n, v, c, tk], i) => `<div class="tile"><span>${n}${tip(tk)}</span><b style="color:${c}">${i === 1 ? rate(v) : num(v)}</b></div>`).join("");
+  const th = (first) => `<thead><tr><th>${first}</th><th class="r">Продаж/сут${tip("speed")}</th><th class="r">Остаток${tip("planAvail")}</th><th class="r">В пути${tip("transit")}</th><th class="r">Хватит, дн${tip("stockDays")}</th><th class="r">Нужно на ${P.n} дн${tip("need")}</th><th class="r">К отправке${tip("rec")}</th><th>Риск${tip("risk")}</th></tr></thead>`;
+  const cells = (a) => `<td class="r">${rate(a.v)}</td><td class="r">${num(a.avail)}</td><td class="r">${num(a.transit)}</td><td class="r">${a.days == null ? "—" : num(a.days)}</td><td class="r">${num(a.need)}</td><td class="r"><b>${num(a.rec)}</b></td>`;
+  const riskCell = (a) => `<td>${riskChip(a.risk)}${a.n > 1 && (a.high || a.mid) ? ` <span class="muted">${a.high ? "срочных: " + a.high : ""}${a.high && a.mid ? ", " : ""}${a.mid ? "скоро: " + a.mid : ""}</span>` : ""}</td>`;
+  $("planClusters").innerHTML = th("Кластер") + `<tbody>${clusters.map((c) => `<tr class="risk-${c.high ? "high" : c.mid ? "mid" : "ok"}"><td><b>${esc(c.name)}</b><br><span class="muted">позиций: ${c.n}</span></td>${cells(c)}${riskCell(c)}</tr>`).join("") || '<tr><td colspan="8" class="muted">Нечего отправлять при выбранных параметрах.</td></tr>'}</tbody>`;
+  const byG = new Map();
+  data.forEach((r) => { if (!byG.has(r.gkey)) byG.set(r.gkey, { key: r.gkey, name: r.gname, variants: r.gvariants, rows: [] }); byG.get(r.gkey).rows.push(r); });
+  const groups = [...byG.values()].map((g) => {
+    const bySku = new Map(); g.rows.forEach((r) => { if (!bySku.has(r.sku)) bySku.set(r.sku, []); bySku.get(r.sku).push(r); });
+    const skus = [...bySku.entries()].map(([sku, l]) => ({ sku, name: l[0].name, offer_id: l[0].offer_id, rows: l.sort((a, b) => b.rec - a.rec || a.cluster.localeCompare(b.cluster, "ru")), ...agg(l) }))
+      .sort((a, b) => String(a.offer_id).localeCompare(String(b.offer_id), "ru", { numeric: true }));
+    return { ...g, skus, ...agg(g.rows) };
+  }).sort((a, b) => b.rec - a.rec || b.high - a.high || String(a.name).localeCompare(String(b.name), "ru"));
+  const trc = (a, extra, attr, inner) => `<tr class="${extra} risk-${a.risk === "high" ? "high" : a.risk === "mid" ? "mid" : "ok"}" ${attr}>${inner}</tr>`;
+  const body = groups.map((g) => {
+    const go = pexp.has("g:" + g.key);
+    let out = trc(g, "clickable", `data-pg="g:${esc(g.key)}"`, `<td><button class="twisty" type="button" aria-label="Развернуть">${go ? "−" : "+"}</button><b>${esc(g.name)}</b><br><span class="muted">${g.skus.length > 1 ? `склейка · размеров в плане: ${g.skus.length}` : `${esc(g.skus[0].offer_id)} · SKU ${esc(g.skus[0].sku)}`}</span></td>${cells(g)}${riskCell(g)}`);
+    if (go) g.skus.forEach((s) => {
+      const so = pexp.has("s:" + g.key + "|" + s.sku);
+      out += trc(s, "sub clickable", `data-pg="s:${esc(g.key + "|" + s.sku)}"`, `<td><button class="twisty" type="button" aria-label="Развернуть по кластерам">${so ? "−" : "+"}</button>${esc(s.offer_id)}<br><span class="muted">${esc(s.name)}</span></td>${cells(s)}${riskCell(s)}`);
+      if (so) s.rows.forEach((r) => { out += trc(r, "sub2", "", `<td>${esc(r.cluster)}</td>${cells({ ...r, days: r.days })}${riskCell({ ...r, n: 1 })}`); });
+    });
+    return out;
+  }).join("");
+  $("planTable").innerHTML = th("Товар") + `<tbody>${body || '<tr><td colspan="8" class="muted">Нечего отправлять при выбранных параметрах.</td></tr>'}</tbody>`;
+}
+/* ---- экспорт ---- */
+function planExportRows() {
+  if (!planCache) return null;
+  const { P, data } = planCache;
+  const head = ["Склейка", "Товар", "Артикул", "SKU", "Кластер", "Продаж/сут", "Остаток", "В пути", "Хватит, дн", `Нужно на ${P.n} дн`, "К отправке, шт", "Риск"];
+  const rows = data.slice().sort((a, b) => String(a.gname).localeCompare(String(b.gname), "ru") || String(a.offer_id).localeCompare(String(b.offer_id), "ru", { numeric: true }) || a.cluster.localeCompare(b.cluster, "ru"))
+    .map((r) => [r.gname, r.name, r.offer_id, String(r.sku), r.cluster, Math.round(r.v * 100) / 100, r.avail, r.transit, r.days == null ? "" : Math.round(r.days * 10) / 10, r.need, r.rec, RISK[r.risk][0]]);
+  const params = [["Параметр", "Значение"], ["Хватить на, дней", P.n], ["Запас, %", P.z], ["Кратность упаковки, шт", P.k], ["Скорость продаж", P.src === "ozon" ? "по данным Ozon (ads_cluster, ≈28 дн.)" : `по отправлениям за ${P.src} дн.`], ["Остатки на", S.stocks.generated_at],
+    ["Формула", "к отправке = max(0, ceil(продажи/сут × дней × (1+запас)) − остаток − в пути), затем округление вверх до кратности"], ["Важно", "План по кластерам; склад внутри кластера выбирается по таймслоту поставки"]];
+  return { head, rows, params };
+}
+function downloadPlanCsv() { const x = planExportRows(); if (x) saveCsv([x.head, ...x.rows], `ozon-plan-${todayIso()}.csv`); }
+/* минимальный .xlsx без библиотек: zip без сжатия + SpreadsheetML */
+const CRC_T = (() => { const t = []; for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const crc32 = (u8) => { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+function zipStore(files) {
+  const enc = new TextEncoder(), parts = [], central = [];
+  let off = 0;
+  const u16 = (v) => [v & 255, (v >> 8) & 255], u32 = (v) => [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255];
+  files.forEach((f) => {
+    const nm = enc.encode(f.name), data = f.data || enc.encode(f.text), crc = crc32(data), date = ((2026 - 1980) << 9) | (1 << 5) | 1;
+    const common = [...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(date), ...u32(crc), ...u32(data.length), ...u32(data.length), ...u16(nm.length), ...u16(0)];
+    parts.push(new Uint8Array([0x50, 0x4B, 3, 4, ...common]), nm, data);
+    central.push(new Uint8Array([0x50, 0x4B, 1, 2, ...u16(20), ...common, ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off)]), nm);
+    off += 30 + nm.length + data.length;
+  });
+  const csize = central.reduce((n, a) => n + a.length, 0);
+  const end = new Uint8Array([0x50, 0x4B, 5, 6, ...u16(0), ...u16(0), ...u16(files.length), ...u16(files.length), ...u32(csize), ...u32(off), ...u16(0)]);
+  const all = [...parts, ...central, end], out = new Uint8Array(all.reduce((n, x) => n + x.length, 0));
+  let o = 0; all.forEach((x) => { out.set(x, o); o += x.length; });
+  return out;
+}
+const XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+function makeXlsx(sheets) {
+  const X = (v) => String(v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const col = (i) => { let s = ""; for (i++; i > 0; i = Math.floor((i - 1) / 26)) s = String.fromCharCode(65 + (i - 1) % 26) + s; return s; };
+  const sheetXml = (sh) => {
+    const rows = sh.rows.map((row, ri) => `<row r="${ri + 1}">` + row.map((v, ci) => {
+      const ref = col(ci) + (ri + 1), st = ri === 0 ? ' s="1"' : "";
+      if (typeof v === "number" && isFinite(v)) return `<c r="${ref}"${st}><v>${v}</v></c>`;
+      if (v === "" || v == null) return "";
+      return `<c r="${ref}"${st} t="inlineStr"><is><t xml:space="preserve">${X(v)}</t></is></c>`;
+    }).join("") + "</row>").join("");
+    const cols = sh.widths ? "<cols>" + sh.widths.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join("") + "</cols>" : "";
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>${cols}<sheetData>${rows}</sheetData></worksheet>`;
+  };
+  const files = [
+    { name: "[Content_Types].xml", text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((_, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}</Types>` },
+    { name: "_rels/.rels", text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>` },
+    { name: "xl/workbook.xml", text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheets.map((s, i) => `<sheet name="${X(s.name)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join("")}</sheets></workbook>` },
+    { name: "xl/_rels/workbook.xml.rels", text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((_, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join("")}<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
+    { name: "xl/styles.xml", text: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF005BFF"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>` }
+  ];
+  sheets.forEach((s, i) => files.push({ name: `xl/worksheets/sheet${i + 1}.xml`, text: sheetXml(s) }));
+  return new Blob([zipStore(files)], { type: XLSX_MIME });
+}
+/* Файл в формате шаблона Ozon «Шаблон OZON.xlsx»: лист Sheet1, A1:C1 = «артикул», «имя (необязательно)», «количество»;
+   Arial 10 (артикул — Arial 12), артикул и имя — строки, количество — число; столбец B шириной 30,66; строки высотой 15,75 */
+function ozonTemplateXlsx(rows) { // rows: [[offer_id, name, qty], …]
+  const X = (v) => String(v).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const sst = [], idx = new Map(), si = (t) => { t = String(t); if (!idx.has(t)) { idx.set(t, sst.length); sst.push(t); } return idx.get(t); };
+  const head = ["артикул", "имя (необязательно)", "количество"].map(si);
+  const H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
+  const RH = 'ht="15.75" customHeight="1"';
+  let sd = `<row r="1" ${RH}><c r="A1" s="1" t="s"><v>${head[0]}</v></c><c r="B1" s="1" t="s"><v>${head[1]}</v></c><c r="C1" s="1" t="s"><v>${head[2]}</v></c></row>`;
+  rows.forEach(([a, n, q], i) => {
+    const r = i + 2;
+    sd += `<row r="${r}" ${RH}><c r="A${r}" s="2" t="s"><v>${si(a)}</v></c>${n ? `<c r="B${r}" s="1" t="s"><v>${si(n)}</v></c>` : `<c r="B${r}" s="1"/>`}<c r="C${r}" s="3"><v>${q}</v></c></row>`;
+  });
+  const last = rows.length + 1;
+  const files = [
+    { name: "[Content_Types].xml", text: `${H}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/></Types>` },
+    { name: "_rels/.rels", text: `${H}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>` },
+    { name: "xl/workbook.xml", text: `${H}<workbook ${NS} xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Sheet1" sheetId="1" r:id="rId1"/></sheets></workbook>` },
+    { name: "xl/_rels/workbook.xml.rels", text: `${H}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/></Relationships>` },
+    { name: "xl/styles.xml", text: `${H}<styleSheet ${NS}><fonts count="4"><font><sz val="10"/><color rgb="FF000000"/><name val="Arial"/></font><font><sz val="10"/><name val="Arial"/><family val="2"/></font><font><sz val="10"/><color rgb="FF000000"/><name val="Arial"/><family val="2"/></font><font><sz val="12"/><color rgb="FF000000"/><name val="Arial"/><family val="2"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs><cellStyles count="1"><cellStyle name="Обычный" xfId="0" builtinId="0"/></cellStyles></styleSheet>` },
+    { name: "xl/sharedStrings.xml", text: `${H}<sst ${NS} count="${sst.length}" uniqueCount="${sst.length}">${sst.map((t) => `<si><t xml:space="preserve">${X(t)}</t></si>`).join("")}</sst>` },
+    { name: "xl/worksheets/sheet1.xml", text: `${H}<worksheet ${NS}><sheetPr><outlinePr summaryBelow="0" summaryRight="0"/></sheetPr><dimension ref="A1:C${last}"/><sheetViews><sheetView tabSelected="1" workbookViewId="0"/></sheetViews><sheetFormatPr baseColWidth="10" defaultColWidth="14.5" defaultRowHeight="15.75" customHeight="1"/><cols><col min="2" max="2" width="30.6640625" customWidth="1"/></cols><sheetData>${sd}</sheetData><pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/></worksheet>` }
+  ];
+  return new Blob([zipStore(files)], { type: XLSX_MIME });
+}
+const safeFile = (s) => String(s).replace(/[\\/:*?"<>|\u0000-\u001F]/g, " ").replace(/\s+/g, " ").trim().slice(0, 100) || "кластер";
+const safeSheet = (s) => String(s).replace(/[\[\]:*?\/\\]/g, " ").replace(/\s+/g, " ").trim().slice(0, 31) || "кластер";
+function uniqueName(name, used, ext) { let n = name, k = 2; while (used.has((n + ext).toLowerCase())) n = `${name} (${k++})`; used.add((n + ext).toLowerCase()); return n; }
+async function blobBytes(blob) { return new Uint8Array(await blob.arrayBuffer()); }
+async function downloadPlanXlsx() {
+  const x = planExportRows(); if (!x) return;
+  const msg = $("pOzonMsg"); msg.textContent = ""; msg.style.color = "var(--pink)";
+  const main = [{ name: "План поставок", rows: [x.head, ...x.rows], widths: [34, 34, 22, 14, 28, 12, 10, 10, 12, 14, 14, 20] }, { name: "Параметры", rows: x.params, widths: [28, 90] }];
+  if (!$("pOzon").checked) { saveBlob(makeXlsx(main), `ozon-plan-${todayIso()}.xlsx`); return; }
+  const { data } = planCache, by = new Map();
+  data.forEach((r) => { if (!by.has(r.cluster)) by.set(r.cluster, []); by.get(r.cluster).push(r); });
+  const clusters = [...by.entries()].sort((a, b) => a[0].localeCompare(b[0], "ru"));
+  const sheetNames = new Set(["план поставок", "параметры"]), fileNames = new Set(), files = [], total = { rows: 0, qty: 0 };
+  const sheets = main.slice();
+  for (const [cl, list] of clusters) {
+    const sorted = list.slice().sort((a, b) => String(a.gname).localeCompare(String(b.gname), "ru") || String(a.offer_id).localeCompare(String(b.offer_id), "ru", { numeric: true }));
+    const rows = sorted.filter((r) => r.rec > 0).map((r) => [String(r.offer_id || r.sku), "", r.rec]); // колонка «имя (необязательно)»: только заголовок, значения пустые
+    sheets.push({ name: uniqueName(safeSheet(cl), sheetNames, ""), widths: [34, 34, 22, 14, 28, 12, 10, 10, 12, 14, 14, 20],
+      rows: [x.head, ...sorted.map((r) => [r.gname, r.name, r.offer_id, String(r.sku), r.cluster, Math.round(r.v * 100) / 100, r.avail, r.transit, r.days == null ? "" : Math.round(r.days * 10) / 10, r.need, r.rec, RISK[r.risk][0]])] });
+    if (!rows.length) continue;
+    total.rows += rows.length; total.qty += rows.reduce((n, r) => n + r[2], 0);
+    files.push({ name: uniqueName(safeFile(cl), fileNames, ".xlsx") + ".xlsx", data: await blobBytes(ozonTemplateXlsx(rows)) });
+  }
+  if (!files.length) { msg.textContent = "Нечего выгружать: при выбранных параметрах и фильтрах нет позиций с количеством больше 0."; return; }
+  files.push({ name: "Сводный отчёт.xlsx", data: await blobBytes(makeXlsx(sheets)) });
+  saveBlob(new Blob([zipStore(files)], { type: "application/zip" }), `ozon-plan-po-gorodam-${todayIso()}.zip`);
+  msg.style.color = "var(--muted)"; msg.textContent = `Готово: файлов по кластерам — ${files.length - 1}, строк — ${total.rows}, штук — ${num(total.qty)}.`;
+}
+["pN", "pZ", "pK"].forEach((id) => $(id).addEventListener("input", renderPlanner));
+["pSrc", "pCluster", "pGroup", "pOnly"].forEach((id) => $(id).addEventListener("change", renderPlanner));
+$("btnPlanCsv").addEventListener("click", downloadPlanCsv);
+$("btnPlanXlsx").addEventListener("click", downloadPlanXlsx);
+$("pOzon").addEventListener("change", () => { $("pOzonHint").hidden = !$("pOzon").checked; $("pOzonMsg").textContent = ""; });
+$("planTable").addEventListener("click", (e) => { const r = e.target.closest("tr[data-pg]"); if (!r) return; const k = r.dataset.pg; if (pexp.has(k)) pexp.delete(k); else pexp.add(k); renderPlanner(); });
+/* ---------------- блок автора (компонент author-block) ---------------- */
+AuthorBlock.init({
+  toolId: "ozon-supply-board",
+  campaign: "ozon_stock",
+  colors: { accent: "#F91155", accentText: "#fff", link: "#005BFF", headFrom: "#090089", headTo: "#005BFF", headText: "#fff",
+            surface: "#fff", ink: "#0B1033", muted: "#5B6482", line: "#D5DEE9", overlay: "rgba(9,0,137,.45)" }
+});
+
+/* ============================================================
+   ДЕМО-РЕЖИМ: синтетические данные в формате ответов Ozon.
+   Все названия, артикулы и номера выдуманы.
+   ============================================================ */
+let DEMO = null;
+function buildDemo() {
+  let seed = 20260101;
+  const rnd = () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const ri = (a, b) => a + Math.floor(rnd() * (b - a + 1));
+  const clusters = [[4001, "Москва, МО и Дальние регионы"], [4002, "Санкт-Петербург и СЗО"], [4003, "Казань"], [4004, "Екатеринбург"], [4005, "Новосибирск"], [4006, "Краснодар"]];
+  // Склейки: model_id общий, названия внутри склейки разные (так делают для SEO). model_id 0 = товар без склейки.
+  const T = "Демо-";
+  const cards = [
+    [7100001, "demo-bridges", [["S", T + "бриджи домашние женские"], ["M", T + "бриджи домашние женские"], ["L", T + "бриджи спортивные женские"], ["XL", T + "бриджи спортивные женские"], ["2XL", T + "бриджи женские для дома и отдыха"], ["3XL", T + "бриджи женские для дома и отдыха"]]],
+    [7100002, "demo-hoodie", [["M", T + "худи оверсайз унисекс"], ["L", T + "худи оверсайз унисекс"], ["XL", T + "худи с капюшоном тёплое унисекс"]]],
+    [7100003, "demo-tee", [["S", T + "футболка базовая"], ["M", T + "футболка базовая"], ["L", T + "футболка хлопковая базовая"], ["XL", T + "футболка хлопковая базовая"]]],
+    [7100004, "demo-jogger", [["S", T + "брюки джогеры"], ["M", T + "брюки джогеры"], ["L", T + "брюки джогеры"]]],
+    [0, "demo-cap", [["ONE", T + "кепка"]]],
+    [0, "demo-socks", [["36-40", T + "носки набор"], ["41-45", T + "носки набор"]]]
+  ];
+  const skus = []; let sk = 9000001;
+  cards.forEach(([mid, base, vars]) => vars.forEach(([sz, name]) => { skus.push({ sku: sk, name, offer_id: `${base}-${sz}`, barcode: "46000" + String(sk).padStart(8, "0"), product_id: 7000000 + sk, model_id: mid }); sk++; }));
+  const dropoffs = [["МСК_ДЕМО_СЦ_1_ХАБ", "Россия, Город Демо, ул. Примерная, 1"], ["СПБ_ДЕМО_СЦ_2", "Россия, Город Образец, пр. Тестовый, 2"]];
+  const stateLine = ["COMPLETED", "COMPLETED", "COMPLETED", "COMPLETED", "COMPLETED", "COMPLETED", "COMPLETED", "COMPLETED", "CANCELLED", "COMPLETED", "COMPLETED", "REPORTS_CONFIRMATION_AWAITING", "ACCEPTANCE_AT_STORAGE_WAREHOUSE", "REPORT_REJECTED", "IN_TRANSIT", "IN_TRANSIT", "ACCEPTED_AT_SUPPLY_WAREHOUSE", "READY_TO_SUPPLY", "REJECTED_AT_SUPPLY_WAREHOUSE", "OVERDUE", "CANCELLED", "DATA_FILLING"];
+  const orders = [], bundles = new Map(), cargoes = new Map();
+  let sid = 5000000100, oid = 900000100;
+  const now = Date.now();
+  const trackStatus = (st) => st === "IN_TRANSIT" ? "ON_TRANSIT_WAREHOUSE" : st === "ACCEPTANCE_AT_STORAGE_WAREHOUSE" ? "ACCEPTING" : ["ACCEPTED_AT_SUPPLY_WAREHOUSE", "READY_TO_SUPPLY", "DATA_FILLING"].includes(st) ? "UNSPECIFIED" : "PROCESSED";
+  stateLine.forEach((st, k) => {
+    const age = (st === "COMPLETED" || st === "CANCELLED") ? 6 + k * 2.4 : Math.max(0.5, 16 - k * 0.8);
+    const created = new Date(now - age * 86400000);
+    const slot = new Date(created.getTime() + 86400000); slot.setUTCHours(10, 0, 0, 0);
+    const to = new Date(slot.getTime() + 3600000);
+    const o = {
+      order_id: oid, order_number: `D-${100000 + k * 7}-1`, created_date: created.toISOString(), state: st,
+      state_updated_date: new Date(Math.min(now, created.getTime() + 3 * 86400000)).toISOString(), data_filling_deadline: null,
+      drop_off_warehouse: { warehouse_id: 1, name: dropoffs[k % 2][0], address: dropoffs[k % 2][1] },
+      timeslot: { timeslot: { from: slot.toISOString(), to: to.toISOString() }, timezone_info: { offset: "10800s", iana_name: "Europe/Moscow" } }, supplies: []
+    };
+    const nsup = ri(1, 3);
+    for (let j = 0; j < nsup; j++) {
+      const cl = clusters[(k + j) % clusters.length];
+      const bid = `demo-bundle-${sid}`;
+      const picks = skus.slice().sort(() => rnd() - 0.5).slice(0, ri(3, 6));
+      const lines = picks.map((p) => ({ ...p, quantity: ri(2, 8) * 5 }));
+      bundles.set(bid, lines);
+      const ncargo = ri(1, 3), list = [];
+      for (let c = 0; c < ncargo; c++) {
+        const cb = `demo-box-${sid}-${c}`;
+        const part = lines.filter((_, idx) => idx % ncargo === c);
+        bundles.set(cb, part.length ? part : [{ ...lines[0], quantity: 5 }]);
+        const td = new Date(slot.getTime() + (c + 1) * 86400000).toISOString().slice(0, 10);
+        list.push({ cargo_id: sid * 1000 + c, type: "BOX", bundle_id: cb, tracking_info: { date: td, status: trackStatus(st), type: "ACTUAL_ARRIVAL" } });
+      }
+      cargoes.set(sid, list);
+      const stored = ["IN_TRANSIT", "COMPLETED", "REPORTS_CONFIRMATION_AWAITING", "ACCEPTANCE_AT_STORAGE_WAREHOUSE", "REPORT_REJECTED"].includes(st);
+      o.supplies.push({ state: st, supply_id: sid, storage_warehouse: stored ? { warehouse_id: 2, name: "ДЕМО_РФЦ_" + (cl[0] % 10), address: "Россия, Город Демо" } : null, is_crossdock: false, bundle_id: bid, macrolocal_cluster_id: cl[0] });
+      sid += 2;
+    }
+    orders.push(o); oid += 11;
+  });
+  const stocks = [], adsMap = new Map();
+  const WH = { 4001: ["ХОРУГВИНО_РФЦ", "НОГИНСК_РФЦ_НОВЫЙ"], 4002: ["САНКТ_ПЕТЕРБУРГ_РФЦ", "СПБ_ШУШАРЫ_РФЦ"], 4003: ["КАЗАНЬ_РФЦ", "КАЗАНЬ_РФЦ_2"], 4004: ["ЕКАТЕРИНБУРГ_РФЦ_НОВЫЙ", "ЕКАТЕРИНБУРГ_РФЦ"], 4005: ["НОВОСИБИРСК_РФЦ", "НОВОСИБИРСК_РФЦ_2"], 4006: ["КРАСНОДАР_РФЦ", "АДЫГЕЙСК_РФЦ"] };
+  const WEIGHT = { 4001: 1.6, 4002: 1, 4003: 0.7, 4004: 0.8, 4005: 0.5, 4006: 0.9 };
+  skus.forEach((p) => {
+    clusters.forEach(([cid, cname]) => {
+      const ads = Math.round(rnd() * 3.2 * WEIGHT[cid] * 100) / 100;
+      adsMap.set(p.sku + "|" + cid, ads);
+      const grade = ads > 2.5 ? "DEFICIT" : ads > 1.5 ? "POPULAR" : ads > 0.7 ? "ACTUAL" : ads > 0.15 ? "SURPLUS" : "NO_SALES";
+      WH[cid].forEach((w, wi) => {
+        const av = wi === 0 ? ri(0, 60) : ri(0, 25);
+        stocks.push({
+          sku: p.sku, name: p.name, offer_id: p.offer_id, warehouse_id: cid * 10 + wi, warehouse_name: w, cluster_id: cid, cluster_name: cname,
+          ads: Math.round(ads * 50) / 100, turnover_grade: grade, idc: ads ? Math.round(av / (ads / 2)) : 0,
+          available_stock_count: av, valid_stock_count: av, waiting_docs_stock_count: rnd() < 0.05 ? 3 : 0,
+          transit_defect_stock_count: rnd() < 0.08 ? ri(1, 4) : 0, stock_defect_stock_count: 0, requested_stock_count: 0,
+          transit_stock_count: wi === 0 && rnd() < 0.4 ? ri(10, 40) : 0, return_from_customer_stock_count: rnd() < 0.2 ? ri(1, 5) : 0, return_to_seller_stock_count: 0,
+          idc_cluster: ads ? Math.round(av * 2 / ads) : 0, ads_cluster: ads, turnover_grade_cluster: grade, macrolocal_cluster_id: cid,
+          outbound_pending_delivery: rnd() < 0.5 ? ri(1, 8) : 0
+        });
+      });
+    });
+  });
+  // Склад без кластера (пункт выдачи) — попадёт в «Прочее»
+  skus.slice(0, 3).forEach((p) => stocks.push({ sku: p.sku, name: p.name, offer_id: p.offer_id, warehouse_id: 1000032, warehouse_name: "ПВЗ_1000032", cluster_id: 0, cluster_name: "", ads: 0, turnover_grade: "NO_SALES", idc: 0, available_stock_count: ri(2, 9), valid_stock_count: 3, waiting_docs_stock_count: 0, transit_defect_stock_count: 0, stock_defect_stock_count: 0, requested_stock_count: 0, transit_stock_count: 0, return_from_customer_stock_count: 0, return_to_seller_stock_count: 0, idc_cluster: 0, ads_cluster: 0, turnover_grade_cluster: "NO_SALES", macrolocal_cluster_id: 0, outbound_pending_delivery: 0 }));
+  // Отправления FBO за 60 дней: по одному на (SKU, кластер, 3 дня); объём ≈ ads × 3 с разбросом
+  const postings = [];
+  skus.forEach((p) => clusters.forEach(([cid, cname]) => {
+    const ads = adsMap.get(p.sku + "|" + cid);
+    for (let d = 0; d < 60; d += 3) {
+      const q = Math.round(ads * 3 * (0.5 + rnd()));
+      if (!q) continue;
+      postings.push({ posting_number: `DEMO-${p.sku}-${cid}-${d}`, status: rnd() < 0.06 ? "cancelled" : "delivered", age: d + rnd() * 3, products: [{ sku: p.sku, name: p.name, offer_id: p.offer_id, quantity: q }], financial_data: { cluster_from: cname, cluster_to: "" } });
+    }
+  }));
+  postings.sort((a, b) => a.age - b.age);
+  return { clusters, orders, bundles, cargoes, stocks, skus, postings };
+}
+async function demoFetch(path, body) {
+  if (!DEMO) DEMO = buildDemo();
+  await sleep(8);
+  const now0 = Date.now(), D = DEMO, ok = (j) => new Response(JSON.stringify(j), { status: 200 });
+  switch (path) {
+    case "/v2/cluster/list": return ok({ result: D.clusters.map(([id, name]) => ({ macrolocal_cluster_id: id, data: { macrolocal_cluster: { name } } })) });
+    case "/v3/supply-order/list": {
+      const st = (body.filter && body.filter.states) || [];
+      const all = D.orders.filter((o) => st.includes(o.state)).sort((a, b) => b.created_date.localeCompare(a.created_date));
+      const from = Number(body.last_id) || 0, page = all.slice(from, from + body.limit);
+      return ok({ order_ids: page.map((o) => o.order_id), last_id: from + body.limit < all.length ? String(from + body.limit) : "" });
+    }
+    case "/v3/supply-order/get": return ok({ orders: D.orders.filter((o) => (body.order_ids || []).includes(o.order_id)) });
+    case "/v1/supply-order/bundle": return ok({ items: D.bundles.get(body.bundle_ids[0]) || [], total_count: 0, last_id: "", has_next: false });
+    case "/v1/cargoes/get": return ok({ supply: (body.supply_ids || []).map((id) => ({ supply_id: id, cargoes: D.cargoes.get(id) || [] })) });
+    case "/v1/supply-order/act/summary/get": {
+      const o = D.orders.find((x) => x.order_id === body.order_id);
+      return ok({ supplies_acts: (o ? o.supplies : []).map((s) => {
+        const q = (D.bundles.get(s.bundle_id) || []).reduce((n, i) => n + i.quantity, 0);
+        return { supply_id: s.supply_id, is_agreement_completed: false, supply_acts: [{ act_id: s.supply_id + 7, act_number: String(s.supply_id), type: "ACCEPTANCE", deadline_utc: new Date(Date.now() + 5 * 86400000).toISOString(), act_state: "AWAITING_APPROVAL_BY_SELLER", summary: { fact_quantity: q - 5, approved_quantity: 0, unidentified_quantity: 0, declared_quantity: q } }] };
+      }) });
+    }
+    case "/v1/supply-order/act/product/get": {
+      const sup = D.orders.flatMap((o) => o.supplies).find((s) => s.supply_id === body.supply_id);
+      const items = ((sup && D.bundles.get(sup.bundle_id)) || []).map((i) => ({ sku_info: { sku: i.sku, name: i.name, offer_id: i.offer_id }, declared_quantity: i.quantity, fact_quantity: i.quantity, approved_quantity: 0 }));
+      return ok({ supply_id: body.supply_id, supply_acts: [{ type: "ACCEPTANCE", items, unidentified_quantity: 0 }], skus_defects: [] });
+    }
+    case "/v3/product/list": return ok({ result: { items: D.skus.map((p) => ({ product_id: p.product_id, offer_id: p.offer_id, archived: false, sku: p.sku })), total: D.skus.length, last_id: "" } });
+    case "/v3/product/info/list": {
+      const ids = (body.product_id || []).map(Number), sk = (body.sku || []).map(Number);
+      const pick = D.skus.filter((p) => ids.includes(p.product_id) || sk.includes(p.sku));
+      const cnt = new Map(); pick.forEach((p) => cnt.set(p.model_id, (cnt.get(p.model_id) || 0) + 1));
+      return ok({ items: pick.map((p) => ({ id: p.product_id, name: p.name, offer_id: p.offer_id, sku: p.sku, is_archived: false, model_info: { model_id: p.model_id, count: p.model_id ? D.skus.filter((x) => x.model_id === p.model_id).length : 0 } })) });
+    }
+    case "/v3/posting/fbo/list": {
+      const days = Math.round((Date.parse(body.filter.to) - Date.parse(body.filter.since)) / 86400000);
+      const all = D.postings.filter((x) => x.age <= days);
+      const from = Number(body.cursor) || 0, page = all.slice(from, from + body.limit);
+      const stamp = (x) => new Date(now0 - x.age * 86400000).toISOString();
+      return ok({ postings: page.map((x) => ({ ...x, in_process_at: stamp(x) })), has_next: from + body.limit < all.length, cursor: String(from + body.limit) });
+    }
+    case "/v1/analytics/stocks": return ok({ items: D.stocks.filter((i) => (body.skus || []).includes(String(i.sku))) });
+    default: return new Response(JSON.stringify({ code: 5, message: "demo: метод не поддержан" }), { status: 404 });
+  }
+}
+
+/* ---------------- запуск ---------------- */
+(function boot() {
+  $("days").value = "30";
+  if (location.hash === "#demo") return start({ id: "demo", key: "demo" }, true, 60);
+  const saved = store.read();
+  if (saved) { $("inId").value = saved.id; start(saved, false, 30); }
+  else showLogin("");
+})();
+</script>
+</body>
+</html>
