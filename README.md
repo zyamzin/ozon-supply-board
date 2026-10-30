@@ -125,12 +125,9 @@
 
 Инструмент бесплатный и распространяется как есть. Используйте на своё усмотрение и сверяйте данные с личным кабинетом Ozon. Автор не несёт ответственности за точность расчётов.
 
-## Автор
+## Полезные инструменты для бизнеса
 
-Меня зовут **Евгений Зямзин**. Я создаю инструменты для оптимизации и упрощения бизнеса, и делюсь ими здесь:
-
-- Telegram-канал: <https://t.me/evgenyzyamzin>
-- Сайт: [zyamzin.ru](https://zyamzin.ru/?utm_source=github&utm_medium=readme&utm_campaign=ozon-supply-board)
+Больше полезных инструментов на моем сайте [zyamzin.ru](https://zyamzin.ru/tools.html?utm_source=github&utm_medium=readme&utm_campaign=ozon-supply-board)
 
 ## Лицензия
 
